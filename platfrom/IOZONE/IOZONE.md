@@ -27,4 +27,17 @@ make <target>
 
 ## Execution
 
-Instructions for executing this benchmark. to be completed.
+Use the following command to test the performance of a specified file system on
+
+* write/rewrite
+* read/re-read
+* random-read/random-write
+
+The test produces output that cover all tested file operations for record size of 4k to 16M for file size of 64k to 100G.  The output will also be stored in an Excel file called IOZone_results.xls
+
+```
+./iozone -az -i 0 -i 1 -i 2 –c –e -b IOZone_results.xls \
+         -f <file system> \
+         -y 4 -q 16m \
+         -g 100g
+```
