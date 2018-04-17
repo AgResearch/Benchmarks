@@ -71,7 +71,7 @@ Run IOR as a MPI program to benchmark the write and read performance of a platfo
 ```
 cd /tmp/benchmark/ior/bin
 source activate /tmp/benchmark/ior-env
-mpirun -np <num_tasks> ./ior -a MPIIO -w -r -N <num_tasks> -b <block_size> -o <path_to_target_filesystem>\ior_seq_test
+mpirun -np <num_tasks> -N <num_tasks_per_node> ./ior -a MPIIO -w -r -N <num_tasks> -b <block_size> -o <path_to_target_filesystem>\ior_seq_test
 ```
 
-Where ```<num_tasks>``` should be large to create sufficient load to test the aggregated bandwidth of the specified filesystem, ```<block_size>``` times the number of tasks allocated to a single compute node should be twice as large as the size of the compute node where the benchmark is executed, and ```<path_to_target_filesystem>``` is the path to the target filesystem that is been benchmarked.
+Where ```<num_tasks>``` should be large to create sufficient load to test the aggregated bandwidth of the specified filesystem, ```<num_tasks_per_node>``` is number of tasks to run on a allocated node,  ```<block_size>``` times ```<num_tasks_per_node>``` should be twice as large as the size of the compute node where the benchmark is executed, and ```<path_to_target_filesystem>``` is the path to the target filesystem that is been benchmarked.
