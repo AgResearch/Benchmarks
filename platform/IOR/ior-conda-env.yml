@@ -1,0 +1,18 @@
+name: ior-env
+channels:
+- bioconda
+- conda-forge
+- defaults
+- r
+dependencies:
+- gmp=6.1.2=0
+- mpc=1.0.3=4
+- mpfr=3.1.5=0
+- openmpi=2.1.2=0
+- cloog=0.18.0=0
+- gcc=4.8.5=7
+- isl=0.12.2=0
+- libgcc=7.2.0=h69d50b8_2
+- libgcc-ng=7.2.0=hdf63c60_3
+- libstdcxx-ng=7.2.0=hdf63c60_3
+prefix: /tmp/ior-env
