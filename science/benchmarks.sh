@@ -1,6 +1,21 @@
 #!/bin/sh
+#
+# this script is used to generate , run and export benchmark scripts and data files
+# The "generate" and "run" steps re-use seq_prisms code. ("generate" simply uses 
+# the dry-run seq_prisms option )
+# 
+# "export" , means that the generated scripts and data chunks are edited and 
+# renamed for portability and archived into a tarball (which may for example 
+# be sent to a hardware vendor for benchmarking). (As part of the export step, 
+# for example hard-coded paths are converted to bash variable references, so that 
+# actual paths to data can be set by the end-user via environment variables)
+#
+# (Note it is not intended that this script itself be exported in any way)
+# 
+#
 
 export SEQ_PRISMS_BIN=/dataset/invermay_hpc_benchmarking/active/afm/benchmarks/science/seq_prisms
+BENCHMARK_INPUT_DATA_FOLDER=/dataset/invermay_hpc_benchmarking/scratch/afm/benchmarks/data
 
 function get_opts() {
    DEBUG=no
@@ -12,11 +27,13 @@ function get_opts() {
 \n
 \n
 example:\n
+./benchmarks.sh -x generate -O /dataset/invermay_hpc_benchmarking/scratch/afm/benchmarks/science
+./benchmarks.sh -x export -O /dataset/invermay_hpc_benchmarking/scratch/afm/benchmarks/science
 \n
 "
 
    # defaults:
-   while getopts ":nhO:C:a:" opt; do
+   while getopts ":nhO:C:x:" opt; do
    case $opt in
        n)
          DRY_RUN=yes
@@ -58,7 +75,7 @@ function check_opts() {
    fi
 
    if [[ $TASK != "generate" && $TASK != "run" && $TASK != "export" ]]; then
-      echo "SAMPLER must be fasta or fastq"
+      echo "TASK must be one of generate, run, export"
       exit 1
    fi
 
@@ -69,7 +86,6 @@ function echo_opts() {
   echo DEBUG=$DEBUG
   echo TASK=$TASK
   echo MINIMUM_SAMPLE_SIZE=$MINIMUM_SAMPLE_SIZE
-
 }
 
 
@@ -78,6 +94,7 @@ function echo_opts() {
 # before running this script)
 #
 function configure_env() {
+   # set up scripts etc.
    cd ../$SEQ_PRISMS_BIN
    get_prisms
    cp ./benchmarks.sh $OUT_DIR
@@ -85,7 +102,14 @@ function configure_env() {
 [tardish]
 [tardis_engine]
 " > $OUT_DIR/.tardishrc
-   cd $OUT_DIR
+
+   # set up data source (if need be)
+   if [ $TASK != "export" ]; then 
+      #### this dataset just for initial testing
+      mkdir -p $BENCHMARK_INPUT_DATA_FOLDER
+      cd $BENCHMARK_INPUT_DATA_FOLDER
+      cp -s /dataset/GBS_T*/ztmp/test/seq_prisms/fastq_samples/SQ*/*.fastq.gz .   # i.e. just a link farm currently 
+   fi
 }
 
 
@@ -99,12 +123,47 @@ function check_env() {
 
 function generate_bench() {
    # this is done by doing a dry run of a number of prisms
-   exit 0
+   #
+   # generate a blast test bench 
+   # (note this is not the final dataset we will use)
+   cd $SEQ_PRISMS_BIN/..
+   mkdir -p $OUT_DIR/alignments
+   seq_prisms/align_prism.sh -n -m 30 -a blastn -r nt -p "-e 1.0e-6"  -O $OUT_DIR/alignments  $BENCHMARK_INPUT_DATA_FOLDER/*.fastq.gz
 }
 
+
 function run_bench() {
-   # TBA
-   exit 0
+   # this contains essentially the same commands as "generate_bench", but without the dry-run option being set
+   cd $OUT_DIR
+   echo "tba"
+   #
+}
+
+
+function export_bench() {
+   # tar up the data files
+   # [ to complete ]
+   # 
+   # edit the blast scripts. After the generate step, these will look like : 
+##!/bin/bash
+#source /dataset/bioinformatics_dev/scratch/tardis/bin/activate
+#tardis -hpctype slurm -d  /dataset/invermay_hpc_benchmarking/scratch/afm/benchmarks/science/alignments   blastn -db nt -query  _condition_fasta_input_/dataset/GBS_Tcirc/ztmp/test/seq_prisms/fastq_samples/SQ0499_CB6K1ANXX_s_6_fastq/B74234_CCACAGTCA_psti.R1.fastq.gz.fastq.s.001.fastq.gz -e 1.0e-6 \> _condition_text_output_/dataset/invermay_hpc_benchmarking/scratch/afm/benchmarks/science/alignments/B74234_CCACAGTCA_psti.R1.fastq.gz.fastq.s.001.fastq.gz.blastn.nt.1.0e6.results
+   # and will be edited to look like
+##!/bin/bash
+#source $BENCHMARK_ENVIRONMENT_SOURCE
+#time blastn -db nt -query  $BENCHMARK_DATA_FOLDER/SQ0499_CB6K1ANXX_s_6_fastq/B74234_CCACAGTCA_psti.R1.fastq.gz.fastq.s.001.fastq.gz -e 1.0e-6 1>B74234_CCACAGTCA_psti.R1.fastq.gz.fastq.s.001.fastq.gz.blastn.nt.1.0e6.stdout 2>B74234_CCACAGTCA_psti.R1.fastq.gz.fastq.s.001.fastq.gz.blastn.nt.1.0e6.stderr
+   # old_environment_source= sys.argv[1]
+old_data_source = sys.argv[2]
+old_prefix = sys.argv[3]
+old_output_folder = sys.argv[4]
+script_basename =  sys.argv[5]
+
+
+   mkdir -p $OUT_DIR/alignments/export
+   for blast_script in $OUT_DIR/alignments/*.blastn.*.sh; do
+      base=`basename $blast_script`
+      cat $blast_script | ./export_script.py  /dataset/bioinformatics_dev/scratch/tardis/bin/activate  $BENCHMARK_INPUT_DATA_FOLDER "tardis -hpctype slurm -d  /dataset/invermay_hpc_benchmarking/scratch/afm/benchmarks/science/alignments" $OUT_DIR $base > $OUT_DIR/alignments/export/$base
+   done
 }
 
 
@@ -116,15 +175,13 @@ function main() {
    configure_env
    if [ $TASK == "generate" ]; then
       generate_bench
-   elif 
-   else
-      run_prism
-      if [ $? == 0 ] ; then
-         html_prism
-      else
-         echo "error state from sample run - skipping html page generation"
-         exit 1
-      fi
+   elif [ $TASK == "run" ]; then
+      run_bench
+   elif [ $TASK == "export" ]; then
+      export_bench
+   else 
+      echo "error unsupported task $TASK"
+      exit 1
    fi
 }
 
@@ -132,12 +189,12 @@ function main() {
 set -x
 main "$@"
 set +x
-crash$
 
 
-function get_prisms() {
-   git clone git@github.com:AgResearch/seq_prisms.git
-}
+##################### BELOW HERE IS JUNK - WILL BE DELETED SOON (source code for copy-and-paste) #################
+
+
+
 
 
 #
@@ -230,15 +287,3 @@ function archive_bwa() {
 
 
 
-
-#get_prisms
-#run_fasta_sample_prism 
-#make_link_farm
-#run_taxonomy_prism 
-#run_sensitive_blast_prism  /dataset/GBS_Tcirc/scratch/ref_genomes/T_circumcincta_db
-#run_sensitive_blast_prism  /dataset/GBS_Tcirc/scratch/ref_genomes/H_contortus_db 
-#run_blast_align_prism
-#run_bwa_align_prism
-#run_fastq_sample_prism 
-#archive_bwa
-run_kmer_prism
