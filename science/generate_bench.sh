@@ -163,6 +163,9 @@ function run_bench() {
    mkdir -p $OUT_DIR/alignments
    time seq_prisms/align_prism.sh -n -m 30 -a blastn -r nt -p "-e 1.0e-6"  -O $OUT_DIR/alignments  $BENCHMARK_INPUT_DATA_FOLDER/*.fastq.gz
    #
+   # TODO - here I am blasting against the "nt" database - thats a good test, but would require vendor to download
+   #   a heap of blast index files from ncbi which would really annoy them I think. I think will 
+   #   need to supply a blast database in or tarball - probably a genome
    # TODO add generation of a bwa (and maybe other ) test bench - this will look similar
    # TODO  - probably will need to add some capture/logging  of the timing information obtained 
 }
