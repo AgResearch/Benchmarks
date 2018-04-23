@@ -1,21 +1,32 @@
 #!/bin/sh
+################################################################################
+# PLEASE NOTE THIS WAS/IS JUST AN INITIAL MINIMAL IMPLEMENTATION TO ILLUSTRATE 
+# THE GENERATE-RUN-EXPORT APPROACH (have indicated todos below - search for TODO ) 
+# (there are probably some todo's I've overlooked)
+################################################################################
 #
-# this script is used to generate , run and export benchmark scripts and data files
+# this script was intended to generate , run and export benchmark scripts and data files
 # The "generate" and "run" steps re-use seq_prisms code. ("generate" simply uses 
 # the dry-run seq_prisms option )
 # 
 # "export" , means that the generated scripts and data chunks are edited and 
-# renamed for portability and archived into a tarball (which may for example 
-# be sent to a hardware vendor for benchmarking). (As part of the export step, 
+# renamed for portability and archived into a tarball, along with an installation 
+# README coped from this source tree  ( - the tarball can then 
+# be sent to a hardware vendor for benchmarking). As part of the export step, 
 # for example hard-coded paths are converted to bash variable references, so that 
-# actual paths to data can be set by the end-user via environment variables)
+# actual paths to data can be set by the end-user via environment variables
 #
-# (Note it is not intended that this script itself be exported in any way)
+# (Note it is not intended that this script itself be exported in any way or sent
+#  to vendors)
 # 
 #
 
+
 export SEQ_PRISMS_BIN=/dataset/invermay_hpc_benchmarking/active/afm/benchmarks/science/seq_prisms
 BENCHMARK_INPUT_DATA_FOLDER=/dataset/invermay_hpc_benchmarking/scratch/afm/benchmarks/data
+# TODO - compile some test data , copy to /dataset/somewhere/archive, and point BENCHMARK_INPUT_DATA_FOLDER at that 
+# (for the very early version used some recent data I am familiar with but this is not suitable 
+# for the production release )
 
 function get_opts() {
    DEBUG=no
@@ -65,6 +76,8 @@ example:\n
 
 
 function get_prisms() {
+   # this script re-uses some existing code. Note that seq_prisms itself
+   # is quite early work-in-progress ! 
    git clone git@github.com:AgResearch/seq_prisms.git
 }
 
@@ -79,13 +92,14 @@ function check_opts() {
       exit 1
    fi
 
+   # TODO - add some additional checks 
+
 }
 
 function echo_opts() {
   echo OUT_DIR=$OUT_DIR
   echo DEBUG=$DEBUG
   echo TASK=$TASK
-  echo MINIMUM_SAMPLE_SIZE=$MINIMUM_SAMPLE_SIZE
 }
 
 
@@ -97,13 +111,19 @@ function configure_env() {
    # set up scripts etc.
    cd ../$SEQ_PRISMS_BIN
    get_prisms
-   cp ./benchmarks.sh $OUT_DIR
+   cp ./generate_bench.sh $OUT_DIR # (seq_prisms and this script use an approach of copying scripts etc. into the 
+                                   # output folder  - this improves the reproducbility and debuggability of 
+                                   # the run)
    echo "
 [tardish]
 [tardis_engine]
 " > $OUT_DIR/.tardishrc
 
    # set up data source (if need be)
+   # TODO - this block is only here in the very early version of this script, until we 
+   # put together a static set of test data - this will be warehouse under the active or 
+   # archive tiers of an appropriate dataset , and BENCHMARK_INPUT_DATA_FOLDER will point 
+   # there. This next if-fi block will then be deleted  
    if [ $TASK != "export" ]; then 
       #### this dataset just for initial testing
       mkdir -p $BENCHMARK_INPUT_DATA_FOLDER
@@ -118,6 +138,8 @@ function check_env() {
       echo "SEQ_PRISMS_BIN not set - exiting"
       exit 1
    fi
+
+   # TODO - add additional checks
 }
 
 
@@ -125,24 +147,33 @@ function generate_bench() {
    # this is done by doing a dry run of a number of prisms
    #
    # generate a blast test bench 
-   # (note this is not the final dataset we will use)
    cd $SEQ_PRISMS_BIN/..
    mkdir -p $OUT_DIR/alignments
    seq_prisms/align_prism.sh -n -m 30 -a blastn -r nt -p "-e 1.0e-6"  -O $OUT_DIR/alignments  $BENCHMARK_INPUT_DATA_FOLDER/*.fastq.gz
+   #
+   # TODO add generation of a bwa (and maybe other ) test bench - this will look similar 
 }
 
 
 function run_bench() {
-   # this contains essentially the same commands as "generate_bench", but without the dry-run option being set
-   cd $OUT_DIR
-   echo "tba"
+   # this is essentially identical to "generate_bench", but without the -n dry-run option 
    #
+   # generate a blast test bench
+   cd $SEQ_PRISMS_BIN/..
+   mkdir -p $OUT_DIR/alignments
+   time seq_prisms/align_prism.sh -n -m 30 -a blastn -r nt -p "-e 1.0e-6"  -O $OUT_DIR/alignments  $BENCHMARK_INPUT_DATA_FOLDER/*.fastq.gz
+   #
+   # TODO add generation of a bwa (and maybe other ) test bench - this will look similar
+   # TODO  - probably will need to add some capture/logging  of the timing information obtained 
 }
 
 
 function export_bench() {
    # tar up the data files
-   # [ to complete ]
+   # TODO - add tar-ing up of data files and writing of this to 
+   #
+   # copy README instructions from the source tree to the output folder so included in tarball
+   # TODO - add that 
    # 
    # edit the blast scripts. After the generate step, these will look like : 
 ##!/bin/bash
@@ -152,18 +183,24 @@ function export_bench() {
 ##!/bin/bash
 #source $BENCHMARK_ENVIRONMENT_SOURCE
 #time blastn -db nt -query  $BENCHMARK_DATA_FOLDER/SQ0499_CB6K1ANXX_s_6_fastq/B74234_CCACAGTCA_psti.R1.fastq.gz.fastq.s.001.fastq.gz -e 1.0e-6 1>B74234_CCACAGTCA_psti.R1.fastq.gz.fastq.s.001.fastq.gz.blastn.nt.1.0e6.stdout 2>B74234_CCACAGTCA_psti.R1.fastq.gz.fastq.s.001.fastq.gz.blastn.nt.1.0e6.stderr
+   # 
+   # this edit is done by a python script which takes the following args : 
    # old_environment_source= sys.argv[1]
-old_data_source = sys.argv[2]
-old_prefix = sys.argv[3]
-old_output_folder = sys.argv[4]
-script_basename =  sys.argv[5]
-
+   # old_data_source = sys.argv[2]
+   # old_prefix = sys.argv[3]
+   # old_output_folder = sys.argv[4]
+   # script_basename =  sys.argv[5]
+   # example : 
+   #   cat $blast_script | ./export_script.py  /dataset/bioinformatics_dev/scratch/tardis/bin/activate  $BENCHMARK_INPUT_DATA_FOLDER "tardis -hpctype slurm -d  /dataset/invermay_hpc_benchmarking/scratch/afm/benchmarks/science/alignments" $OUT_DIR $base > $OUT_DIR/alignments/export/$base
 
    mkdir -p $OUT_DIR/alignments/export
    for blast_script in $OUT_DIR/alignments/*.blastn.*.sh; do
       base=`basename $blast_script`
       cat $blast_script | ./export_script.py  /dataset/bioinformatics_dev/scratch/tardis/bin/activate  $BENCHMARK_INPUT_DATA_FOLDER "tardis -hpctype slurm -d  /dataset/invermay_hpc_benchmarking/scratch/afm/benchmarks/science/alignments" $OUT_DIR $base > $OUT_DIR/alignments/export/$base
+      # TODO  - that last will need updating as /dataset/bioinformatics_dev/scratch/tardis/bin/activate is deprecated 
+      # TODO  - that last line was an initial test - e.g. replace /dataset/invermay_hpc_benchmarking/scratch/afm/benchmarks/science/alignments with $OUT_DIR/alignments 
    done
+   # TODO - will need to add edits of additional benchmarks we add such as bwa
 }
 
 
@@ -189,101 +226,3 @@ function main() {
 set -x
 main "$@"
 set +x
-
-
-##################### BELOW HERE IS JUNK - WILL BE DELETED SOON (source code for copy-and-paste) #################
-
-
-
-
-
-#
-
-function run_fastq_sample_prism() {
-   set -x
-   mkdir $OUT_DIR/fastq_samples
-   for demulti in /dataset/GBS_Tcirc/active/test/*_demulti /dataset/GBS_Tcirc/scratch/SQ0054_C4UAUACXX_s_8_fastq.txt.gz_demulti; do
-      base=`basename $demulti .txt.gz_demulti`
-      mkdir -p $OUT_DIR/fastq_samples/$base
-      seq_prisms/sample_prism.sh -s .001 -M 100000 -a fastq -O $OUT_DIR/fastq_samples/$base $demulti/*.fastq.gz
-   done
-   set +x
-}
-
-
-function make_link_farm() {
-   mkdir  $OUT_DIR/link_farm
-   for lane_sample  in SQ0499_CB6K1ANXX_s_5_fastq  SQ0499_CB6K1ANXX_s_6_fastq  SQ0500_CB6K1ANXX_s_7_fastq  SQ0500_CB6K1ANXX_s_8_fastq SQ0054_C4UAUACXX_s_8_fastq; do 
-      lane_moniker=`echo $lane_sample | awk -F_ '{printf("%s_%s",$1,$4)}' - `
-      for sample in $OUT_DIR/fastq_samples/$lane_sample/*.fastq.gz; do
-         base=`basename $sample`
-         cp -s $sample $OUT_DIR/link_farm/${lane_moniker}_${base}
-      done 
-   done
-}
-
-
-function run_taxonomy_prism() {
-   set -x
-   mkdir $OUT_DIR/nt_taxonomy
-   seq_prisms/taxonomy_prism.sh -m 10 -D $OUT_DIR/link_farm  -O $OUT_DIR/nt_taxonomy  /dataset/GBS_Tcirc/ztmp/test/seq_prisms/link_farm/*.fasta.gz
-   set +x
-}
-
-
-function run_sensitive_blast_prism() {
-   # not actually a prism yet
-   blastdb=$1
-   blastbase=`basename $blastdb`
-   set -x
-   mkdir -p $OUT_DIR/sensitive_blast 
-   for infile in $OUT_DIR/link_farm/*.fasta.gz; do
-      base=`basename $infile .fasta.gz`
-      tardis.py -c 10 -hpctype slurm blastn -word_size 7 -dust no -soft_masking false -db $blastdb -query _condition_fasta_input_$infile -out _condition_uncompressedtext_output_$OUT_DIR/sensitive_blast/${base}.$blastbase -evalue 0.05 -num_descriptions 1 -num_alignments 1 -num_threads 4
-   done
-   set +x
-}
-
-
-function run_blast_align_prism() {
-   echo "
-/dataset/GBS_Tcirc/scratch/ref_genomes/H_contortus_db
-/dataset/GBS_Tcirc/scratch/ref_genomes/T_circumcincta_db
-"  > $OUT_DIR/blast_references.txt
-   echo  "
--evalue 1.0e-6
--evalue 1.0e-6
-"  > $OUT_DIR/blast_parameters.txt
-    seq_prisms/align_prism.sh -m 30 -a blastn -r $OUT_DIR/blast_references.txt -p $OUT_DIR/blast_parameters.txt -O $OUT_DIR/alignments  $OUT_DIR/link_farm/*Dovile*
-}
-
-
-function run_bwa_align_prism() {
-   echo "
-/dataset/GBS_Tcirc/scratch/ref_genomes/H_contortus_genomic.fa
-/dataset/GBS_Tcirc/scratch/ref_genomes/T_circumcincta_genomic.fna
-"  > $OUT_DIR/bwa_references.txt
-    #seq_prisms/align_prism.sh -m 10 -a bwa -r $OUT_DIR/bwa_references.txt -O $OUT_DIR/alignments  $OUT_DIR/link_farm/*.fastq.gz
-    seq_prisms/align_prism.sh -m 10 -f -a bwa -r $OUT_DIR/bwa_references.txt -O $OUT_DIR/alignments  $OUT_DIR/link_farm/*.fastq.gz
-}
-
-function run_kmer_prism() {
-    #seq_prisms/kmer_prism.sh -n  -f -a fastq -O $OUT_DIR/kmer_analysis  $OUT_DIR/link_farm/*.fastq.gz
-    #seq_prisms/kmer_prism.sh -n  -f -a fastq -O $OUT_DIR/kmer_analysis   /dataset/GBS_Tcirc/ztmp/test/seq_prisms/link_farm/SQ0500_8_Dovile_GAACCTC_apeki.R1.fastq.gz.fastq.s.001.fastq.gz /dataset/GBS_Tcirc/ztmp/test/seq_prisms/link_farm/SQ0500_8_undetermined.fastq.gz.fastq.s.001.fastq.gz 
-    seq_prisms/kmer_prism.sh -f -a fastq -O $OUT_DIR/kmer_analysis   /dataset/GBS_Tcirc/ztmp/test/seq_prisms/link_farm/SQ0500_8_Dovile_GAACCTC_apeki.R1.fastq.gz.fastq.s.001.fastq.gz /dataset/GBS_Tcirc/ztmp/test/seq_prisms/link_farm/SQ0500_8_undetermined.fastq.gz.fastq.s.001.fastq.gz 
-}
-
-
-
-function archive_bwa() {
-   set -x
-   #rsync -a $OUT_DIR/alignments/*.bam  $ARCHIVE_BASE/alignments
-   #rsync -a $OUT_DIR/alignments/*.stats  $ARCHIVE_BASE/alignments
-   #rsync -a $OUT_DIR/alignments/*.align_prism  $ARCHIVE_BASE/alignments
-   #rsync -a $OUT_DIR/alignments/*.sh  $ARCHIVE_BASE/alignments
-   rsync -a $OUT_DIR/alignments/*.log  $ARCHIVE_BASE/alignments
-   set +x
-}
-
-
-
