@@ -22,29 +22,23 @@
 #
 
 
-export SEQ_PRISMS_BIN=/dataset/invermay_hpc_benchmarking/active/afm/benchmarks/science/seq_prisms
-BENCHMARK_INPUT_DATA_FOLDER=/dataset/invermay_hpc_benchmarking/scratch/afm/benchmarks/data
-# TODO - compile some test data , copy to /dataset/somewhere/archive, and point BENCHMARK_INPUT_DATA_FOLDER at that 
-# (for the very early version used some recent data I am familiar with but this is not suitable 
-# for the production release )
-
 function get_opts() {
    DEBUG=no
    HPC_TYPE=slurm
    OUT_DIR=""
    help_text="
 \n
-./benchmarks.sh  [-h] [-n] [-d] [-x generate|run|export ] -O outdir [-C local|slurm ]\n
+./benchmarks.sh  [-h] [-n] [-d] [-x generate|run|export ] -w workdir [-C local|slurm ]\n
 \n
 \n
 example:\n
-./benchmarks.sh -x generate -O /dataset/invermay_hpc_benchmarking/scratch/afm/benchmarks/science
-./benchmarks.sh -x export -O /dataset/invermay_hpc_benchmarking/scratch/afm/benchmarks/science
+./benchmarks.sh -x generate -w /dataset/invermay_hpc_benchmarking/scratch/afm/benchmarks/science
+./benchmarks.sh -x export -w /dataset/invermay_hpc_benchmarking/scratch/afm/benchmarks/science
 \n
 "
 
    # defaults:
-   while getopts ":nhO:C:x:" opt; do
+   while getopts ":nhw:C:x:" opt; do
    case $opt in
        n)
          DRY_RUN=yes
@@ -56,8 +50,13 @@ example:\n
          echo -e $help_text
          exit 0
          ;;
-       O)
-         OUT_DIR=$OPTARG
+       w)
+         WORK_DIR="$OPTARG"
+         OUT_DIR="$WORK_DIR/out"
+         mkdir -p "$OUT_DIR"
+         SEQ_PRISMS_BIN="$WORK_DIR/seq_prisms"
+         export SEQ_PRISMS_BIN
+         BENCHMARK_INPUT_DATA_FOLDER="$WORK_DIR/data"
          ;;
        x)
          TASK=$OPTARG
@@ -77,8 +76,8 @@ example:\n
 
 function get_prisms() {
    # this script re-uses some existing code. Note that seq_prisms itself
-   # is quite early work-in-progress ! 
-   git clone git@github.com:AgResearch/seq_prisms.git
+   # is quite early work-in-progress !
+   git clone https://github.com/AgResearch/seq_prisms.git $SEQ_PRISMS_BIN
 }
 
 function check_opts() {
@@ -109,7 +108,6 @@ function echo_opts() {
 #
 function configure_env() {
    # set up scripts etc.
-   cd ../$SEQ_PRISMS_BIN
    get_prisms
    cp ./generate_bench.sh $OUT_DIR # (seq_prisms and this script use an approach of copying scripts etc. into the 
                                    # output folder  - this improves the reproducbility and debuggability of 
@@ -126,9 +124,18 @@ function configure_env() {
    # there. This next if-fi block will then be deleted  
    if [ $TASK != "export" ]; then 
       #### this dataset just for initial testing
+      # TODO - compile some test data , copy to /dataset/somewhere/archive, and point BENCHMARK_INPUT_DATA_FOLDER at that
+      # (for the very early version used some recent data I am familiar with but this is not suitable
+      # for the production release )
       mkdir -p $BENCHMARK_INPUT_DATA_FOLDER
-      cd $BENCHMARK_INPUT_DATA_FOLDER
-      cp -s /dataset/GBS_T*/ztmp/test/seq_prisms/fastq_samples/SQ*/*.fastq.gz .   # i.e. just a link farm currently 
+      # since many of these compressed fastq files have a common basename,
+      # we create uniquely named symlinks by simply numbering them
+      i=0
+      for src in /dataset/GBS_T*/ztmp/test/seq_prisms/fastq_samples/SQ*/*.fastq.gz; do
+         i=$((i + 1))
+         dst="$BENCHMARK_INPUT_DATA_FOLDER/`printf %04d $i`"
+         ln -s $src $dst     # i.e. just a link farm currently
+      done
    fi
 }
 
@@ -225,7 +232,4 @@ function main() {
    fi
 }
 
-
-set -x
 main "$@"
-set +x
