@@ -1,0 +1,18 @@
+name: VELVET
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+  - r
+dependencies:
+  - perl-bioperl=1.6.924=4
+  - perl-threaded=5.22.0=10
+  - perl-velvetoptimiser=2.2.5=0
+  - perl-yaml=1.24=0
+  - velvet=1.2.10=1
+  - perl=5.22.2.1=0
+  - libgcc=7.2.0=h69d50b8_2
+  - libgcc-ng=7.2.0=hdf63c60_3
+  - libstdcxx-ng=7.2.0=hdf63c60_3
+prefix: /home/macleanp/conda-envs/VELVET
+
