@@ -1,4 +1,4 @@
-#/bin/sh
+#!/bin/sh
 # needs to run in conda environment abyss
 
 test -n "$SCIENCE_DATA_ROOTDIR" || {
@@ -44,4 +44,6 @@ longb='Sample2_LongRead.fastq' \
 longc='Sample3_LongRead.fastq' \
 longd='Trinity.fasta' \
 mp5kb='GSM02-3Kb_S1_L001_R1_001.fastq GSM02-3Kb_S1_L001_R2_001.fastq' \
-mp8kb='GSM02-8Kb_S1_L001_R1_001.fastq GSM02-8Kb_S1_L001_R2_001.fastq' >$outdir/abyss2_k84_trans.out 2>$outdir/abyss2_k84_trans.err
+mp8kb='GSM02-8Kb_S1_L001_R1_001.fastq GSM02-8Kb_S1_L001_R2_001.fastq' \
+mpirun="mpirun --oversubscribe"
+>$outdir/abyss2_k84_trans.out 2>$outdir/abyss2_k84_trans.err
