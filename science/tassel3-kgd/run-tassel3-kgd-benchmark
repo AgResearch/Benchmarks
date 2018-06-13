@@ -1,0 +1,75 @@
+#!/bin/sh
+
+test -n "$SCIENCE_DATA_ROOTDIR" || {
+    echo >&2 "fatal error: missing environment variable SCIENCE_DATA_ROOTDIR - source the top-level environment file"
+    exit 1
+}
+test -n "$SCIENCE_OUTPUT_ROOTDIR" || {
+    echo >&2 "fatal error: missing environment variable SCIENCE_OUTPUT_ROOTDIR - source the top-level environment file"
+    exit 1
+}
+
+datadir=$SCIENCE_DATA_ROOTDIR/tassel3-kgd
+outdir=$SCIENCE_OUTPUT_ROOTDIR/tassel3-kgd
+scriptdir=`/bin/pwd`
+
+test -d "$datadir" || {
+    echo >&2 "fatal error: missing data directory $datadir - unpack the data tarball"
+    exit 1
+}
+
+rm -rf "$outdir" && mkdir -p "$outdir" || {
+    echo >&2 "fatal error: failed to create output directory $outdir"
+    exit 1
+}
+
+# create local symlinks pointing at output directory
+for subdir in hapMap mapInfo mergedTagCounts tagPair tagsByTaxa; do
+    rm -rf $outdir/$subdir
+    mkdir $outdir/$subdir
+done
+
+# create symlinks in output directory pointing at input data
+for subdir in key Illumina; do
+    ln -s -f $datadir/$subdir $outdir/$subdir
+done
+
+
+echo "========== 01_create_dirs ===================="
+(cd $outdir; time $scriptdir/01_create_dirs.sh) 2>&1 | tee $outdir/01_create_dirs.log
+echo
+
+echo "========== 02_FastqToTagCount ===================="
+(cd $outdir; time $scriptdir/02_FastqToTagCount.sh) 2>&1 | tee $outdir/02_FastqToTagCount.log
+echo
+
+echo "========== 03_MergeTaxaTagCount ===================="
+(cd $outdir; time $scriptdir/03_MergeTaxaTagCount.sh) 2>&1 | tee $outdir/03_MergeTaxaTagCount.log
+echo
+
+echo "========== 04_TagCountToTagPair ===================="
+(cd $outdir; time $scriptdir/04_TagCountToTagPair.sh) 2>&1 | tee $outdir/04_TagCountToTagPair.log
+echo
+
+echo "========== 05_TagPairToTBT ===================="
+(cd $outdir; time $scriptdir/05_TagPairToTBT.sh) 2>&1 | tee $outdir/05_TagPairToTBT.log
+echo
+
+echo "========== 06_TBTToMapInfo ===================="
+(cd $outdir; time $scriptdir/06_TBTToMapInfo.sh) 2>&1 | tee $outdir/06_TBTToMapInfo.log
+echo
+
+echo "========== 07_MapInfoToHapMap ===================="
+(cd $outdir; time $scriptdir/07_MapInfoToHapMap.sh) 2>&1 | tee $outdir/07_MapInfoToHapMap.log
+echo
+
+echo "========== 08_get_reads_tags_per_samplev2.py ===================="
+(cd $outdir; time $scriptdir/08_get_reads_tags_per_samplev2.py) 2>&1 | tee $outdir/08_get_reads_tags_per_samplev2.log
+echo
+
+# ensure the scripts can find each other
+for script in GBS-Chip-Gmatrix.R run_KGD_1.R; do
+    ln -s -f $scriptdir/$script $outdir/hapMap/$script
+done
+echo "========== 09_run_KGDs.sh ===================="
+(cd $outdir; time $scriptdir/09_run_KGDs.sh) 2>&1 | tee $outdir/09_run_KGDs.log
