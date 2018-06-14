@@ -23,7 +23,7 @@ test -d "$datadir" || {
 }
 
 cd $datadir
-test -d "$outdir" || mkdir -p "$outdir" || {
+rm -rf "$outdir" && mkdir -p "$outdir" || {
     echo >&2 "fatal error: failed to create output directory $outdir"
     exit 1
 }
