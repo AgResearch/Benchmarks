@@ -6,17 +6,20 @@ Velvet is a genome assembler that we use reasonably often. Velvetoptimizer is a 
 
 ## Installation
 
-conda env create -f velvet.yml
+Once the science datasets have been unpacked, and `../science-benchmarks.env`
+has been updated appropriately:
 
-### Sample data [optional]
-
-$SAMPLE_DATA_ROOT/VELVET/*.fastq.gz
+```
+$ conda env create -f velvet-conda-env.yml
+```
 
 ## Execution
 
-gunzip *.fastq.gz
-source activate VELVET
-VelvetOptimiser.pl -s 131 -e 231 -f '-shortPaired -fastq -separate SRR5420176_1.fastq SRR5420176_2.fastq'
+```
+$ source activate velvet
+$ . ../science-benchmarks.env
+$ ./run-velvet-benchmark
+```
 
 ### Output verification [optional]
 

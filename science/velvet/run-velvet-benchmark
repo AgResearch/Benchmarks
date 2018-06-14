@@ -1,0 +1,34 @@
+#!/bin/sh
+# needs to run in conda environment velvet
+
+test -n "$SCIENCE_DATA_ROOTDIR" || {
+    echo >&2 "fatal error: missing environment variable SCIENCE_DATA_ROOTDIR - source the top-level environment file"
+    exit 1
+}
+test -n "$SCIENCE_OUTPUT_ROOTDIR" || {
+    echo >&2 "fatal error: missing environment variable SCIENCE_OUTPUT_ROOTDIR - source the top-level environment file"
+    exit 1
+}
+
+datadir=$SCIENCE_DATA_ROOTDIR/velvet
+outdir=$SCIENCE_OUTPUT_ROOTDIR/velvet
+test -d "$datadir" || {
+    echo >&2 "fatal error: missing data directory $datadir - unpack the data tarball"
+    exit 1
+}
+
+rm -rf "$outdir" && mkdir -p "$outdir" || {
+    echo >&2 "fatal error: failed to create output directory $outdir"
+    exit 1
+}
+
+cd $outdir
+echo "========== unzipping fastq files ===================="
+for zipfile in `cd $datadir; ls *.fastq.gz`; do
+    fastq=`basename $zipfile .gz`
+    time gunzip -c $datadir/$zipfile >$fastq
+done
+echo
+
+echo "========== running VelvetOptimiser ===================="
+time VelvetOptimiser.pl -s 131 -e 231 -f '-shortPaired -fastq -separate SRR5420176_1.fastq SRR5420176_2.fastq'
