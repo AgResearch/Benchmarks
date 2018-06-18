@@ -22,11 +22,7 @@ $SAMPLE_DATA_ROOT/VELVET/*.fastq.gz
 ```
 $ source activate abyss
 $ . ../science-benchmarks.env
-```
-
-And then either directly:
-```
-$ ./run_abyss.sh
+$ ./run-abyss-benchmark
 ```
 
 ### Output verification
