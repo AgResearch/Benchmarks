@@ -29,11 +29,6 @@ And then either directly:
 $ ./run_abyss.sh
 ```
 
-or via job submission:
-```
-$ sbatch -p $SLURM_PARTITION ./run_abyss.sh
-```
-
 ### Output verification
 
 **TBD**
