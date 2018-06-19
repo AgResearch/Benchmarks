@@ -1,4 +1,4 @@
-name: tassel3-kgd
+name: gbs
 channels:
   - bioconda
   - r

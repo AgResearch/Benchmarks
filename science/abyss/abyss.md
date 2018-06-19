@@ -1,28 +1,27 @@
 # ABySS
 
-## Purpose
-
 ABySS is a de novo, parallel, paired-end sequence assembler.
+
+## Purpose
+TBD
 
 ## Installation
 
-Once the science datasets have been unpacked, and `../science-benchmarks.env`
-has been updated appropriately:
+Create a Conda environment based on the provided environment specification file and then activate the environment before building and running the benchmark. 
 
 ```
-$ conda env create -f abyss-conda-env.yml
+$ mkdir -p $ABYSS_CONDA_ENV
+$ conda-env create -p $ABYSS_CONDA_ENV -f $ABYSS_CONDA_ENV_SPEC
+$ source activate $ABYSS_CONDA_ENV
 ```
-
-### Sample data [optional]
-
-$SAMPLE_DATA_ROOT/VELVET/*.fastq.gz
 
 ## Execution
 
+Activate the Conda environment created for this benchmark then run the shell script, *run-abyss-benchmark*, to launch the benchmark.
+
 ```
 $ source activate abyss
-$ . ../science-benchmarks.env
-$ ./run-abyss-benchmark
+$ BENCHMARK_SOURCE/science/abyss/run-abyss-benchmark
 ```
 
 ### Output verification

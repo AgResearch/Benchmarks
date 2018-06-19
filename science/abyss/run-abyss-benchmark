@@ -1,12 +1,12 @@
 #!/bin/sh
 # needs to run in conda environment abyss
 
-test -n "$SCIENCE_DATA_ROOTDIR" || {
-    echo >&2 "fatal error: missing environment variable SCIENCE_DATA_ROOTDIR - source the top-level environment file"
+test -n "$INPUT_DATA_ROOT_DIR" || {
+    echo >&2 "fatal error: missing environment variable INPUT_DATA_ROOT_DIR - source the top-level environment file"
     exit 1
 }
-test -n "$SCIENCE_OUTPUT_ROOTDIR" || {
-    echo >&2 "fatal error: missing environment variable SCIENCE_OUTPUT_ROOTDIR - source the top-level environment file"
+test -n "$OUTPUT_DATA_ROOT_DIR" || {
+    echo >&2 "fatal error: missing environment variable OUTPUT_DATA_ROOT_DIR - source the top-level environment file"
     exit 1
 }
 
@@ -15,8 +15,8 @@ test -n "$NCORES" -a "$NCORES" -ge 1 -a "$NCORES" -le 100 || {
     exit 1
 }
 
-datadir=$SCIENCE_DATA_ROOTDIR/abyss
-outdir=$SCIENCE_OUTPUT_ROOTDIR/abyss
+datadir=$INPUT_DATA_ROOT_DIR/abyss
+outdir=$OUTPUT_DATA_ROOT_DIR/abyss
 test -d "$datadir" || {
     echo >&2 "fatal error: missing data directory $datadir - unpack the data tarball"
     exit 1
