@@ -33,7 +33,7 @@ type abyss-pe >/dev/null 2>&1 || {
     exit 1
 }
 
-abyss-pe np=$NCORES k=84 name=abyss2_k84_trans q=20 lib='pe200a pe200b pe500a pe500b' mp='mp5kb mp8kb' long='longa longb longc longd' \
+abyss-pe np=$NCORES j=$NCORES k=84 name=abyss2_k84_trans q=20 lib='pe200a pe200b pe500a pe500b' mp='mp5kb mp8kb' long='longa longb longc longd' \
 pe200a='L6_V2.notCombined_1.fastq.clipped L6_V2.notCombined_2.fastq.clipped' \
 pe200b='L7_200_V2.notCombined_1.fastq.clipped L7_200_V2.notCombined_2.fastq.clipped' \
 pe500a='L7_500.notCombined_1.fastq.clipped L7_500.notCombined_2.fastq.clipped' \
@@ -45,5 +45,4 @@ longc='Sample3_LongRead.fastq' \
 longd='Trinity.fasta' \
 mp5kb='GSM02-3Kb_S1_L001_R1_001.fastq GSM02-3Kb_S1_L001_R2_001.fastq' \
 mp8kb='GSM02-8Kb_S1_L001_R1_001.fastq GSM02-8Kb_S1_L001_R2_001.fastq' \
-mpirun="mpirun --oversubscribe"
 >$outdir/abyss2_k84_trans.out 2>$outdir/abyss2_k84_trans.err

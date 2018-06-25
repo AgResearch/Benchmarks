@@ -21,7 +21,7 @@ Activate the Conda environment created for this benchmark then run the shell scr
 
 ```
 $ source activate abyss
-$ BENCHMARK_SOURCE/science/abyss/run-abyss-benchmark
+$ $BENCHMARK_SOURCE/science/abyss/run-abyss-benchmark
 ```
 
 ### Output verification
