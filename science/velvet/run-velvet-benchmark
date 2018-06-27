@@ -1,6 +1,18 @@
 #!/bin/sh
 # needs to run in conda environment velvet
 
+if [ -z $1 ];
+then
+    	echo >&2 "fatal error: mising argument 1 - total memory allocate to the run in GB"
+        exit 1
+fi
+
+if ! [[ $1 =~ ^[0-9]+$ ]];
+then
+    	echo >&2 "fatal error: incorrect format for argument 1. It should be an integer"
+        exit 1
+fi
+
 test -n "$INPUT_DATA_ROOT_DIR" || {
     echo >&2 "fatal error: missing environment variable INPUT_DATA_ROOT_DIR - source the top-level environment file"
     exit 1
@@ -34,4 +46,7 @@ done
 echo
 
 echo "========== running VelvetOptimiser ===================="
-time VelvetOptimiser.pl -t 6 -s 131 -e 231 -f '-shortPaired -fastq -separate SRR5420176_1.fastq SRR5420176_2.fastq'
+allocated_memory=$1
+num_instance=$((allocated_memory/32))
+
+time VelvetOptimiser.pl -t $num_instance -s 131 -e 231 -f '-shortPaired -fastq -separate SRR5420176_1.fastq SRR5420176_2.fastq'

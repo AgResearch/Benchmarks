@@ -22,11 +22,15 @@ Activate the Conda environment created for this benchmark then run the shell scr
 
 ```
 $ source activate $VELVET_CONDA_ENV
-$ $BENCHMARK_SOURCE/science/velvet/run-velvet-benchmark
+$ $BENCHMARK_SOURCE/science/velvet/run-velvet-benchmark <available_memory> > $OUTPUT_DATA_ROOT_DIR/velvet/benchmark_run.out
 ```
+
+where ```<available_memory>``` should be the total available memory to support this run and its unit is GB.
 
 ### Output verification [optional]
 
-Optimal Velvet hash value should be 189, i.e. grep for the following in the output:
+Optimal Velvet hash value should be 189 and it is indicated in the *final optimised assembly details* section of the standard out.  For a qucik validation, run the following command against the captured standard output.
 
-"Velvet hash value: 189"
+```
+$ grep "Velvet hash value: 189" $OUTPUT_DATA_ROOT_DIR/velvet/benchmark_run.out
+```
