@@ -23,10 +23,12 @@ test -d "$datadir" || {
 }
 
 cd $datadir
-rm -rf "$outdir" && mkdir -p "$outdir" || {
+mkdir -p "$outdir" || {
     echo >&2 "fatal error: failed to create output directory $outdir"
     exit 1
 }
+
+rm -rf "$outdir"/*
 
 type abyss-pe >/dev/null 2>&1 || {
     echo >&2 "fatal error: abyss-pe not found - did you create and activate the abyss conda environment?"

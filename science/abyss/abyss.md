@@ -20,7 +20,7 @@ $ source activate $ABYSS_CONDA_ENV
 Activate the Conda environment created for this benchmark then run the shell script, *run-abyss-benchmark*, to launch the benchmark.
 
 ```
-$ source activate abyss
+$ source activate $ABYSS_CONDA_ENV
 $ $BENCHMARK_SOURCE/science/abyss/run-abyss-benchmark
 ```
 
