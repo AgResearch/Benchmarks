@@ -17,10 +17,13 @@ test -d "$datadir" || {
     exit 1
 }
 
-rm -rf "$outdir" && mkdir -p "$outdir" || {
+mkdir -p "$outdir" || {
     echo >&2 "fatal error: failed to create output directory $outdir"
     exit 1
 }
+
+echo "========== Removing output from the previous run ===="
+rm -rf "$outdir"/*
 
 cd $outdir
 echo "========== unzipping fastq files ===================="
@@ -31,4 +34,4 @@ done
 echo
 
 echo "========== running VelvetOptimiser ===================="
-time VelvetOptimiser.pl -s 131 -e 231 -f '-shortPaired -fastq -separate SRR5420176_1.fastq SRR5420176_2.fastq'
+time VelvetOptimiser.pl -t 6 -s 131 -e 231 -f '-shortPaired -fastq -separate SRR5420176_1.fastq SRR5420176_2.fastq'
