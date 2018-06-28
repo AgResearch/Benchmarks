@@ -8,8 +8,6 @@ Validate a platform's fit for purpose to support a major workflow used by scient
 
 ## Installation
 
-## Installation
-
 Create a Conda environment based on the provided environment specification file and then activate the environment before building and running the benchmark. 
 
 ```
