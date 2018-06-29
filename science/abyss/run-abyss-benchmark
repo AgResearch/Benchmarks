@@ -17,12 +17,14 @@ test -n "$NCORES" -a "$NCORES" -ge 1 -a "$NCORES" -le 100 || {
 
 datadir=$INPUT_DATA_ROOT_DIR/abyss
 outdir=$OUTPUT_DATA_ROOT_DIR/abyss
+
+export datadir
+
 test -d "$datadir" || {
     echo >&2 "fatal error: missing data directory $datadir - unpack the data tarball"
     exit 1
 }
 
-cd $datadir
 mkdir -p "$outdir" || {
     echo >&2 "fatal error: failed to create output directory $outdir"
     exit 1
@@ -35,16 +37,16 @@ type abyss-pe >/dev/null 2>&1 || {
     exit 1
 }
 
-abyss-pe np=$NCORES j=$NCORES k=84 name=abyss2_k84_trans q=20 lib='pe200a pe200b pe500a pe500b' mp='mp5kb mp8kb' long='longa longb longc longd' \
-pe200a='L6_V2.notCombined_1.fastq.clipped L6_V2.notCombined_2.fastq.clipped' \
-pe200b='L7_200_V2.notCombined_1.fastq.clipped L7_200_V2.notCombined_2.fastq.clipped' \
-pe500a='L7_500.notCombined_1.fastq.clipped L7_500.notCombined_2.fastq.clipped' \
-pe500b='L8.notCombined_1.fastq.clipped L8.notCombined_2.fastq.clipped' \
-se='L6_V2.extendedFrags.fastq.clipped L7_200_V2.extendedFrags.fastq.clipped L7_500.extendedFrags.fastq.clipped L8.extendedFrags.fastq.clipped' \
-longa='Sample1_LongRead_manual_trim.fastq' \
-longb='Sample2_LongRead.fastq' \
-longc='Sample3_LongRead.fastq' \
-longd='Trinity.fasta' \
-mp5kb='GSM02-3Kb_S1_L001_R1_001.fastq GSM02-3Kb_S1_L001_R2_001.fastq' \
-mp8kb='GSM02-8Kb_S1_L001_R1_001.fastq GSM02-8Kb_S1_L001_R2_001.fastq' \
+abyss-pe -C $outdir np=$NCORES j=$NCORES k=84 name=abyss2_k84_trans q=20 lib='pe200a pe200b pe500a pe500b' \
+mp='mp5kb mp8kb' long='longa longb longc' \
+pe200a='${datadir}/L6_V2.notCombined_1.fastq.clipped ${datadir}/L6_V2.notCombined_2.fastq.clipped' \
+pe200b='${datadir}/L7_200_V2.notCombined_1.fastq.clipped ${datadir}/L7_200_V2.notCombined_2.fastq.clipped' \
+pe500a='${datadir}/L7_500.notCombined_1.fastq.clipped ${datadir}/L7_500.notCombined_2.fastq.clipped' \
+pe500b='${datadir}/L8.notCombined_1.fastq.clipped ${datadir}/L8.notCombined_2.fastq.clipped' \
+se='${datadir}/L6_V2.extendedFrags.fastq.clipped ${datadir}/L7_200_V2.extendedFrags.fastq.clipped ${datadir}/L7_500.extendedFrags.fastq.clipped ${datadir}/L8.extendedFrags.fastq.clipped' \
+longa='${datadir}/Sample1_LongRead_manual_trim.fastq' \
+longb='${datadir}/Sample2_LongRead.fastq' \
+longc='${datadir}/Sample3_LongRead.fastq' \
+mp5kb='${datadir}/GSM02-3Kb_S1_L001_R1_001.fastq GSM02-3Kb_S1_L001_R2_001.fastq' \
+mp8kb='${datadir}/GSM02-8Kb_S1_L001_R1_001.fastq GSM02-8Kb_S1_L001_R2_001.fastq' \
 >$outdir/abyss2_k84_trans.out 2>$outdir/abyss2_k84_trans.err
