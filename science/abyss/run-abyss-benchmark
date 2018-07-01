@@ -47,6 +47,6 @@ se='${datadir}/L6_V2.extendedFrags.fastq.clipped ${datadir}/L7_200_V2.extendedFr
 longa='${datadir}/Sample1_LongRead_manual_trim.fastq' \
 longb='${datadir}/Sample2_LongRead.fastq' \
 longc='${datadir}/Sample3_LongRead.fastq' \
-mp5kb='${datadir}/GSM02-3Kb_S1_L001_R1_001.fastq GSM02-3Kb_S1_L001_R2_001.fastq' \
-mp8kb='${datadir}/GSM02-8Kb_S1_L001_R1_001.fastq GSM02-8Kb_S1_L001_R2_001.fastq' \
+mp5kb='${datadir}/GSM02-3Kb_S1_L001_R1_001.fastq ${datadir}/GSM02-3Kb_S1_L001_R2_001.fastq' \
+mp8kb='${datadir}/GSM02-8Kb_S1_L001_R1_001.fastq ${datadir}/GSM02-8Kb_S1_L001_R2_001.fastq' \
 >$outdir/abyss2_k84_trans.out 2>$outdir/abyss2_k84_trans.err
