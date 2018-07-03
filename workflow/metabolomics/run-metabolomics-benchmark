@@ -1,0 +1,31 @@
+#!/bin/sh
+
+test -n "$INPUT_DATA_ROOT_DIR" || {
+    echo >&2 "fatal error: missing environment variable INPUT_DATA_ROOT_DIR - source the top-level environment file"
+    exit 1
+}
+test -n "$OUTPUT_DATA_ROOT_DIR" || {
+    echo >&2 "fatal error: missing environment variable OUTPUT_DATA_ROOT_DIR - source the top-level environment file"
+    exit 1
+}
+
+datadir=$INPUT_DATA_ROOT_DIR/metabolomics
+outdir=$OUTPUT_DATA_ROOT_DIR/metabolomics
+
+export datadir
+export outdir
+
+scriptdir=$BENCHMARK_SOURCE/workflow/metabolomics
+
+test -d "$datadir" || {
+    echo >&2 "fatal error: missing data directory $datadir - unpack the data tarball"
+    exit 1
+}
+
+rm -rf "$outdir" && mkdir -p "$outdir" || {
+    echo >&2 "fatal error: failed to create output directory $outdir"
+    exit 1
+}
+
+echo "========== running metabolomic workflow ===================="
+time Rscript ${scriptdir}/metabolomics.R
