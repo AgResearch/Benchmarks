@@ -8,10 +8,10 @@ library(Biobase)
 
 #=== setting processing parameters ===========================
 # detecting number of available processors
-nSlve = as.numeric(Sys.getenv()["NUMBER_OF_PROCESSORS"])
+nSlve = as.numeric(Sys.getenv()["NUM_PROCS"])
 
 # setting work directory
-output_dir = Sys.getenv(){"outdir"}
+output_dir = Sys.getenv()["outdir"]
 setwd(output_dir)
 
 list.files()
@@ -20,7 +20,7 @@ list.files()
 filename = "Abbott_HILIC_Pos_Analysis.RData"
 
 # raw data input with only ONE form of ionisation - choose the directory containing your files
-input_dir = Sys.getenv(){"datadir"}
+input_dir = Sys.getenv()["datadir"]
 mzXMLfiles <- list.files(input_dir, pattern=".mzXML$", recursive = TRUE, full.names = TRUE)
 
 # minimum fraction [%] of samples necessary in at least one of the sample groups for it to be a valid group
@@ -48,21 +48,21 @@ start.time <- Sys.time()
 	xs.grp <- group.density(xset, bw = 5, mzwid = 0.015, minfrac = minFRAC)
 end.time <- Sys.time()
 time.taken <- end.time - start.time
-time.taken # 6 sec 766 peak groups
+time.taken #
 
 #=== Retention Time correction ===============================  
 start.time <- Sys.time()
 	xs.grp.rt <- retcor.obiwarp(xs.grp, plottype = "deviation")
 end.time <- Sys.time()
 time.taken <- end.time - start.time
-time.taken # 28.4 min 
+time.taken #
 
 #=== regrouping ==============================================
 start.time <- Sys.time()
 	xs.regrp <- group.density(xs.grp.rt, bw = 5, mzwid = 0.015, minfrac = minFRAC)
 end.time <- Sys.time()
 time.taken <- end.time - start.time
-time.taken # 6 sec 772 peak grps
+time.taken #
 
 #=== fill peaks ==============================================
 start.time <- Sys.time()

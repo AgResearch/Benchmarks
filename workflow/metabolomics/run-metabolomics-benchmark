@@ -9,11 +9,9 @@ test -n "$OUTPUT_DATA_ROOT_DIR" || {
     exit 1
 }
 
-datadir=$INPUT_DATA_ROOT_DIR/metabolomics
-outdir=$OUTPUT_DATA_ROOT_DIR/metabolomics
+export datadir=$INPUT_DATA_ROOT_DIR/metabolomics
+export outdir=$OUTPUT_DATA_ROOT_DIR/metabolomics
 
-export datadir
-export outdir
 
 scriptdir=$BENCHMARK_SOURCE/workflow/metabolomics
 
@@ -28,4 +26,4 @@ rm -rf "$outdir" && mkdir -p "$outdir" || {
 }
 
 echo "========== running metabolomic workflow ===================="
-time Rscript ${scriptdir}/metabolomics.R
+time Rscript --vanilla ${scriptdir}/metabolomics.R
