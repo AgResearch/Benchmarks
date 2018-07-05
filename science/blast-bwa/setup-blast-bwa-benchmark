@@ -2,6 +2,15 @@
 #
 # produce the run script for the blast-bwa benchmark
 
+# check have an argument which is number of reads to prepare in sample file
+if test "$1" -ge 1 -a "$1" -le 10000000; then
+    # 4 lines per sample, so:
+    fastq_lines=$(($1 * 4))
+else
+    echo >&2 "usage: `basename $0` <n-samples>"
+    exit 1
+fi
+
 test -n "$INPUT_DATA_ROOT_DIR" || {
     echo >&2 "fatal error: missing environment variable INPUT_DATA_ROOT_DIR - source the top-level environment file"
     exit 1
@@ -23,8 +32,17 @@ for prog in gbsx; do
     }
 done
 
-# NOTE: change this to small for a quicker test
-seqbase=medium_fastq.txt
+# prepare sample file
+test -n "$AGR_BLAST_FASTQ" || {
+    echo >&2 "fatal error: missing environment variable AGR_BLAST_FASTQ - source the top-level environment file"
+    exit 1
+}
+test -s "$AGR_BLAST_FASTQ" || {
+    echo >&2 "fatal error: missing file AGR_BLAST_FASTQ=$AGR_BLAST_FASTQ - is the top-level environment incorrect?"
+    exit 1
+}
+seqbase=sample_fastq.txt
+zcat "$AGR_BLAST_FASTQ" | head -n $fastq_lines | gzip -c >$datadir/${seqbase}.gz
 
 # Use GBSX to demultiplex
 demultidir="$datadir/${seqbase}.gz_demulti"
