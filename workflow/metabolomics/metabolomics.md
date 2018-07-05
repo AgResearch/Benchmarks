@@ -34,8 +34,8 @@ There shall be ~1038 lines in *$OUTPUT_DATA_ROOT_DIR/metabolomics/d2.csv*
 $ wc -l $OUTPUT_DATA_ROOT_DIR/metabolomics/d2.csv
 ```
 
-Additional the average of the **rt** filed in the same csv file should be within the range of 550.0 +/- 5
+Additionally, the average of the **rt** filed in the same csv file should be within the range of 550.0 +/- 5
 
 ```
-$ cat $OUTPUT_DATA_ROOT_DIR/metabolomics/d2.csv | awk -F',' '{sum+=$4} END {print sum/NR}'
+$ sed -e '1d' $OUTPUT_DATA_ROOT_DIR/metabolomics/d2.csv | awk -F',' '{sum+=$4} END {print sum/NR}'
 ```
