@@ -1,0 +1,11 @@
+#!/bin/sh -e
+#
+# script to bootstrap conda;  if conda is already available locally, this is not needed
+
+tmpdir=/tmp/bootstrap-conda$$
+trap "rm -rf $tmpdir" EXIT
+mkdir $tmpdir
+cd $tmpdir
+
+wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+sh ./Miniconda3-latest-Linux-x86_64.sh
