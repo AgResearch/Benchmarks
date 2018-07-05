@@ -20,7 +20,7 @@ Create a Conda environment based on the provided environment file and then activ
 ```
 $ mkdir -p $IOZONE_CONDA_ENV
 $ conda-env create -p $IOZONE_CONDA_ENV -f $IOZONE_CONDA_ENV_SPEC
-$ source activate $IOZONE_CONDA_ENV
+$ conda activate $IOZONE_CONDA_ENV
 ```
 
 Navigate to the directory where the downloaded file is store and use the following instructions to build it in the created Conda environment.
@@ -45,7 +45,7 @@ Use the following command to test the performance of a specified file system on
 The test produces output that cover all tested file operations for record size of 4k to 16M for file size of 64k to a specified file size, which should be twice the size of the memory of the node where the benchmark is run.  The output will also be stored in an Excel file called IOZone_results.xls
 
 ```
-$ source activate $IOZONE_CONDA_ENV
+$ conda activate $IOZONE_CONDA_ENV
 $ iozone -az -i 0 -i 1 -i 2 –c –e -b IOZone_results.xls \
          -f <file system> \
          -y 4 -q 16m \

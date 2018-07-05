@@ -12,7 +12,7 @@ Create a Conda environment based on the provided environment specification file 
 ```
 $ mkdir -p $BLAST_BWA_CONDA_ENV
 $ conda-env create -p $BLAST_BWA_CONDA_ENV -f $BLAST_BWA_CONDA_ENV_SPEC
-$ source activate $BLAST_BWA_CONDA_ENV
+$ conda activate $BLAST_BWA_CONDA_ENV
 ```
 
 ## Execution
@@ -20,7 +20,7 @@ $ source activate $BLAST_BWA_CONDA_ENV
 Activate the Conda environment created for this benchmark then run the shell script, *run-blast-bwa-benchmark*, to launch the benchmark.
 
 ```
-$ source activate $BLAST_BWA_CONDA_ENV
+$ conda activate $BLAST_BWA_CONDA_ENV
 $ $BENCHMARK_SOURCE/science/blast-bwa/run-blast-bwa-benchmark
 ```
 

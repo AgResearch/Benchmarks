@@ -12,7 +12,7 @@ Create a Conda environment based on the provided environment specification file 
 ```
 $ mkdir -p $ABYSS_CONDA_ENV
 $ conda-env create -p $ABYSS_CONDA_ENV -f $ABYSS_CONDA_ENV_SPEC
-$ source activate $ABYSS_CONDA_ENV
+$ conda activate $ABYSS_CONDA_ENV
 ```
 
 ## Execution
@@ -20,7 +20,7 @@ $ source activate $ABYSS_CONDA_ENV
 Activate the Conda environment created for this benchmark then run the shell script, *run-abyss-benchmark*, to launch the benchmark.
 
 ```
-$ source activate $ABYSS_CONDA_ENV
+$ conda activate $ABYSS_CONDA_ENV
 $ $BENCHMARK_SOURCE/science/abyss/run-abyss-benchmark
 ```
 

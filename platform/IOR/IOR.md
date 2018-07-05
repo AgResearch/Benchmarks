@@ -20,7 +20,7 @@ Create a Conda environment based on the provided environment specification file 
 ```
 $ mkdir -p $IOR_CONDA_ENV
 $ conda-env create -p $IOR_CONDA_ENV -f $IOR_CONDA_ENV_SPEC
-$ source activate $IOR_CONDA_ENV
+$ conda activate $IOR_CONDA_ENV
 ```
 
 Use the following instructions to navigate into directory, ior, and to build it.
@@ -40,7 +40,7 @@ $ make install
 Run IOR to benchmark the performance of a single process writing to a file and then reading such a file sequentially. The following commands serve as an example, you may need to customise it for the benchmarking platform. 
 
 ```
-$ source activate $IOR_CONDA_ENV
+$ conda activate $IOR_CONDA_ENV
 $ ior -a POSIX -w -r -e -b <block_size> -o <path_to_target_filesystem>\ior_seq_test
 ```
 
@@ -51,7 +51,7 @@ Where ```<block_size>``` should be at least twice as large as the size of the co
 Run IOR tests concurrently to benchmark the performance of a filesystem on a compute node. The following is an example bash script for this test, although it may need to be customised for the benchmarking platform.
 
 ```
-source activate $IOR_CONDA_ENV
+conda activate $IOR_CONDA_ENV
 echo "Preparing testing data..."
 ior -a POSIX -w -e -k -b <block_size> -o <path_to_target_filesystem>/ior_rw_test > ./ior_concurent.out
 echo "Starging Concurrent Read..."
@@ -68,7 +68,7 @@ Where ```<block_size>``` should be at least twice as large as the size of the co
 Run IOR as a MPI program to benchmark the write and read performance of a platform's filesystem.  The following commands serve as an example, you may need to customise it for the benchmarking platform.
 
 ```
-$ source activate $IOR_CONDA_ENV
+$ conda activate $IOR_CONDA_ENV
 $ mpirun -np <num_tasks> -N <num_tasks_per_node> ior -a MPIIO -w -r -N <num_tasks> -b <block_size> -o <path_to_target_filesystem>\ior_seq_test
 ```
 

@@ -13,7 +13,7 @@ Create a Conda environment based on the provided environment specification file 
 ```
 $ mkdir -p $VELVET_CONDA_ENV
 $ conda-env create -p $VELVET_CONDA_ENV -f $VELVET_CONDA_ENV_SPEC
-$ source activate $VELVET_CONDA_ENV
+$ conda activate $VELVET_CONDA_ENV
 ```
 
 ## Execution
@@ -21,7 +21,7 @@ $ source activate $VELVET_CONDA_ENV
 Activate the Conda environment created for this benchmark then run the shell script, *run-velvet-benchmark*, to launch the benchmark.
 
 ```
-$ source activate $VELVET_CONDA_ENV
+$ conda activate $VELVET_CONDA_ENV
 $ $BENCHMARK_SOURCE/science/velvet/run-velvet-benchmark <available_memory> > $OUTPUT_DATA_ROOT_DIR/velvet/benchmark_run.out
 ```
 

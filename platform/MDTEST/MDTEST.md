@@ -19,7 +19,7 @@ Benchmark the performance of a specified filesystem by creating 1,048,576 (1024x
 The following example will launch a test on a single compute node to create and remove required files and directories and then remove them.
 
 ```
-$ source activate $IOR_CONDA_ENV
+$ conda activate $IOR_CONDA_ENV
 $ mdtest -F -C -T -r -n 1048576 -d <path_to_target_filesystem>
 ```
 
@@ -30,7 +30,7 @@ Where, ``` <path_to_target_filesystem>``` is the path to the target filesystem t
 The following example will launch a test on group of nodes to create and remove required files and directories and then remove them.
 
 ```
-$ source activate $IOR_CONDA_ENV
+$ conda activate $IOR_CONDA_ENV
 $ mpirun -np <num_tasks> -N <num_tasks_per_node> mdtest -F -C -T -r -n <1048576/<num_tasks>> -d <path_to_target_filesystem> -N <num_tasks_per_node>
 ```
 

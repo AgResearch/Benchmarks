@@ -13,7 +13,7 @@ Create a Conda environment based on the provided environment specification file 
 ```
 $ mkdir -p $GBS_CONDA_ENV
 $ conda-env create -p $GBS_CONDA_ENV -f $GBS_CONDA_ENV_SPEC
-$ source activate $GBS_CONDA_ENV
+$ conda activate $GBS_CONDA_ENV
 ```
 
 
@@ -22,7 +22,7 @@ $ source activate $GBS_CONDA_ENV
 This workflow benchmark consists a serial of tasks, which are encapsulated by a single shell script, *run-gbs-benchmark*.  To execute this benchmark, first activate the Conda environment created for this benchmark and then execute.
 
 ```
-$ source activate $GBS_CONDA_ENV
+$ conda activate $GBS_CONDA_ENV
 $ $BENCHMARK_SOURCE/workflow/GBS/run-gbs-benchmark
 ```
 
