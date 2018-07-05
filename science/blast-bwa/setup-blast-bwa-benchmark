@@ -1,0 +1,131 @@
+#!/bin/sh
+#
+# produce the run script for the blast-bwa benchmark
+
+test -n "$INPUT_DATA_ROOT_DIR" || {
+    echo >&2 "fatal error: missing environment variable INPUT_DATA_ROOT_DIR - source the top-level environment file"
+    exit 1
+}
+
+scriptdir="$(dirname "$0")"
+datadir=$INPUT_DATA_ROOT_DIR/blast-bwa
+
+test -d "$datadir" || {
+    echo >&2 "fatal error: missing data directory $datadir - unpack the data tarball"
+    exit 1
+}
+
+# check all expected programs available
+for prog in gbsx; do
+    type $prog >/dev/null 2>&1 || {
+        echo >&2 "fatal error: $prog not found - did you create and activate the blast-bwa conda environment?"
+        exit 1
+    }
+done
+
+# NOTE: change this to small for a quicker test
+seqbase=medium_fastq.txt
+
+# Use GBSX to demultiplex
+demultidir="$datadir/${seqbase}.gz_demulti"
+mkdir -p "$demultidir" || {
+    echo >&2 "fatal error: failed to create demultiplex directory $demultidir"
+    exit 1
+}
+rm -rf "$demultidir"/*
+
+echo "gbsx $seqbase"
+gbsx --Demultiplexer -f1 $datadir/${seqbase}.gz -i $datadir/${seqbase}.gz.info -o $demultidir -lf true -gzip true -mb 0 -me 0 -n false
+
+# now write the output script
+runscript="$scriptdir/run-blast-bwa-benchmark"
+
+#
+# script header
+#
+cat >$runscript <<'EOF'
+#!/bin/sh
+# needs to run in conda environment abyss
+
+test -n "$INPUT_DATA_ROOT_DIR" || {
+    echo >&2 "fatal error: missing environment variable INPUT_DATA_ROOT_DIR - source the top-level environment file"
+    exit 1
+}
+test -n "$OUTPUT_DATA_ROOT_DIR" || {
+    echo >&2 "fatal error: missing environment variable OUTPUT_DATA_ROOT_DIR - source the top-level environment file"
+    exit 1
+}
+
+datadir=$INPUT_DATA_ROOT_DIR/blast-bwa
+outdir=$OUTPUT_DATA_ROOT_DIR/blast-bwa
+
+test -d "$datadir" || {
+    echo >&2 "fatal error: missing data directory $datadir - unpack the data tarball"
+    exit 1
+}
+
+mkdir -p "$outdir" || {
+    echo >&2 "fatal error: failed to create output directory $outdir"
+    exit 1
+}
+
+rm -rf "$outdir"/*
+
+# check all expected programs available
+for prog in fastq_to_fasta bwa blastn samtools; do
+    type $prog >/dev/null 2>&1 || {
+        echo >&2 "fatal error: $prog not found - did you create and activate the blast-bwa conda environment?"
+        exit 1
+    }
+done
+
+EOF
+
+cat >>$runscript <<EOF
+demultidir="\$datadir/${seqbase}.gz_demulti"
+
+EOF
+
+#
+# scripted bwa commands
+#
+cat >>$runscript <<'EOF'
+# align using bwa
+bwadir="$outdir/bwa"
+mkdir -p "$bwadir"
+
+EOF
+
+nfiles=`ls $demultidir/*.fastq.gz | grep -v undetermined | wc -l`
+i=0
+for fastq in `ls $demultidir/*.fastq.gz | grep -v undetermined`; do
+    fastqbase=`basename $fastq`
+    i=$((i + 1))
+    name=`echo $fastq | sed -e 's,^.*/\([^/]*\)$,\1,' -e 's,_.*$,,'`
+    echo "echo \"bwa $name ($i of $nfiles)\"" >>$runscript
+    echo "bwa mem -t 1 -R \"@RG\\tID:$name\\tSM:$name\" \"\$datadir/Oar_v3.1.fa\" \"\$demultidir/$fastqbase\" 2>\$bwadir/$name.bwa.log | samtools view -b -S -u -T \$datadir/Oar_v3.1.fa -q 30 - | samtools sort -@ 1 - -o \$bwadir/$name.bam >\"\$bwadir/$name.out\" 2>\"\$bwadir/$name.out\"" >>$runscript
+done
+
+#
+# scripted blast commands
+#
+cat >>$runscript <<'EOF'
+
+# align using blast
+blastdir="$outdir/blast"
+mkdir -p "$blastdir"
+
+EOF
+
+nfiles=`ls $demultidir/*.fastq.gz | grep -v undetermined | wc -l`
+i=0
+for fastq in `ls $demultidir/*.fastq.gz | grep -v undetermined`; do
+    fastqbase=`basename $fastq`
+    i=$((i + 1))
+    name=`echo $fastq | sed -e 's,^.*/\([^/]*\)$,\1,' -e 's,_.*$,,'`
+    zcat "$demultidir/$fastqbase" | fastq_to_fasta -r -o "$demultidir/$name.fa"
+    echo "echo \"blast $name ($i of $nfiles)\"" >>$runscript
+    echo "time blastn -task blastn -query \"\$demultidir/$name.fa\" -db nt -evalue 1.0e-10 -dust '20 64 1' -max_target_seqs 1 -outfmt '7 qseqid sseqid pident evalue staxids sscinames scomnames sskingdoms stitle' -out \"\$blastdir/$name.blast\" >\"\$blastdir/$name.out\" 2>\"\$blastdir/$name.err\"" >>$runscript
+done
+
+chmod +x $runscript

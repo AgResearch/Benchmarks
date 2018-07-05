@@ -5,6 +5,9 @@ Blast and bwa are sequence aligners.
 ## Purpose
 TBD
 
+## Setup
+The benchmark script `run-blast-bwa-benchmark` is created offline at AgResearch by running the script `setup-blast-bwa-benchmark`.
+
 ## Installation
 
 Create a Conda environment based on the provided environment specification file and then activate the environment before building and running the benchmark.
