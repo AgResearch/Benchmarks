@@ -33,8 +33,8 @@ for prog in gbsx bwa samtools; do
     }
 done
 
-#seqbase=SQ0093_C6JPWANXX_s_5_fastq.txt
-seqbase=small_fastq.txt
+# NOTE: change this to small for a quicker test
+seqbase=medium_fastq.txt
 
 # Use GBSX to demultiplex
 demultidir="$outdir/${seqbase}.gz_demulti"
