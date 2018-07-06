@@ -33,7 +33,7 @@ for prog in fastq_to_fasta bwa blastn samtools; do
     }
 done
 
-demultidir="$datadir/medium_fastq.txt.gz_demulti"
+demultidir="$datadir/sample_fastq.txt.gz_demulti"
 
 # align using bwa
 bwadir="$outdir/bwa"
