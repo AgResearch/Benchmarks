@@ -23,12 +23,13 @@ if [ -z $2 ];
 then
     	echo "warrning: using the same number of specified as threads. It might not be ideal for a multi-node job."
         nt=$np
+else
+        nt=$2
 fi
 
-nt=$2
 if ! [[ $nt =~ ^[0-9]+$ ]];
 then
-    	echo >&2 "fatal error: incorrect format for argument 1. It should be an integer"
+    	echo >&2 "fatal error: incorrect format for argument 2 ($nt). It should be an integer"
         exit 1
 fi
 
