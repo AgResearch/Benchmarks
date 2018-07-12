@@ -1,6 +1,38 @@
 #!/bin/sh
 # needs to run in conda environment abyss
 
+np=1
+nt=1
+
+if [ -z $1 ];
+then
+    	echo >&2 "fatal error: mising argument 1 - total number of CPU cores allocated to the run"
+        exit 1
+fi
+
+np=$1
+if ! [[ $np =~ ^[0-9]+$ ]];
+then
+    	echo >&2 "fatal error: incorrect format for argument 1. It should be an integer"
+        exit 1
+fi
+
+
+
+if [ -z $2 ];
+then
+    	echo "warrning: using the same number of specified as threads. It might not be ideal for a multi-node job."
+        nt=$np
+fi
+
+nt=$2
+if ! [[ $nt =~ ^[0-9]+$ ]];
+then
+    	echo >&2 "fatal error: incorrect format for argument 1. It should be an integer"
+        exit 1
+fi
+
+
 test -n "$INPUT_DATA_ROOT_DIR" || {
     echo >&2 "fatal error: missing environment variable INPUT_DATA_ROOT_DIR - source the top-level environment file"
     exit 1
@@ -37,7 +69,7 @@ type abyss-pe >/dev/null 2>&1 || {
     exit 1
 }
 
-abyss-pe -C $outdir np=$NCORES j=$NCORES k=84 name=abyss2_k84_trans q=20 lib='pe200a pe200b pe500a pe500b' \
+abyss-pe -C $outdir np=$np j=$nt k=84 name=abyss2_k84_trans q=20 lib='pe200a pe200b pe500a pe500b' \
 mp='mp5kb mp8kb' long='longa longb longc' \
 pe200a='${datadir}/L6_V2.notCombined_1.fastq.clipped ${datadir}/L6_V2.notCombined_2.fastq.clipped' \
 pe200b='${datadir}/L7_200_V2.notCombined_1.fastq.clipped ${datadir}/L7_200_V2.notCombined_2.fastq.clipped' \
