@@ -67,7 +67,7 @@ dependencies:
   - libtiff=4.0.9=he6b73bb_1
   - libwebp=0.5.2=7
   - libxcb=1.13=h470a237_0
-  - libxml2=2.9.8=h422b904_1
+  - libxml2=2.9.8=h422b904_2
   - mkl_fft=1.0.2=py36_0
   - mkl_random=1.0.1=py36_0
   - ncurses=5.9=10
