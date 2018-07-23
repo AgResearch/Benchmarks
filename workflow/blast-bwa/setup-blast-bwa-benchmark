@@ -2,6 +2,9 @@
 #
 # produce the run script for the blast-bwa benchmark
 
+# original fastq file at AgResearch, used to preparing sample data for benchmark
+AGR_BLAST_FASTQ=/dataset/hiseq/active/fastq-link-farm/SQ0093_C6JPWANXX_s_5_fastq.txt.gz
+
 # check have an argument which is number of reads to prepare in sample file
 if test "$1" -ge 1 -a "$1" -le 10000000; then
     # 4 lines per sample, so:
