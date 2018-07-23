@@ -1,5 +1,5 @@
 #!/bin/sh
-# needs to run in conda environment abyss
+# needs to run in conda environment blast-bwa
 
 test -n "$INPUT_DATA_ROOT_DIR" || {
     echo >&2 "fatal error: missing environment variable INPUT_DATA_ROOT_DIR - source the top-level environment file"

@@ -1,9 +1,9 @@
 # blast / bwa
 
-Blast and bwa are sequence aligners.
+Using Blast and bwa are sequence aligners in a high throughput workload.
 
 ## Purpose
-TBD
+Benchmark the platform's performance, particularly its capacity to support a high throughput workflow which is frequently executed in AgResearch.
 
 ## Setup
 The benchmark script `run-blast-bwa-benchmark` is created offline at AgResearch by running the script `setup-blast-bwa-benchmark`.
