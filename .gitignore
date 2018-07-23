@@ -5,4 +5,4 @@ input_data
 output_data/*
 slrum_scripts/*
 benchmark_dev.env
-
+workflow/blast-bwa/run-blast-bwa-benchmark-dev
