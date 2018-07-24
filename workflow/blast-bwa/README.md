@@ -6,7 +6,7 @@ Using Blast and bwa are sequence aligners in a high throughput workload.
 Benchmark the platform's performance, particularly its capacity to support a high throughput workflow which is frequently executed in AgResearch.
 
 ## Setup
-The benchmark script `run-blast-bwa-benchmark` is created offline at AgResearch by running the script `setup-blast-bwa-benchmark`.  This setup script expects one argument, which must be an integer between 1 and 10,000,000.  This argument controls the number of Blast and BWA tasks produced by the setup script.
+The benchmark script `run-blast-bwa-benchmark` is created offline at AgResearch by running the script `setup-blast-bwa-benchmark`.  This setup script expects one argument, which must be an integer between 1 and 10,000,000.  This argument controls the number of reads to prepare for benchmarking.
 
 ## Installation
 
