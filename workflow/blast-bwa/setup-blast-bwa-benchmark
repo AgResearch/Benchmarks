@@ -60,6 +60,10 @@ gbsx --Demultiplexer -f1 $datadir/${seqbase}.gz -i $datadir/${seqbase}.gz.info -
 
 # now write the output script
 runscript="$scriptdir/run-blast-bwa-benchmark"
+env_script="$scriptdir/blast-bwa.env"
+task_list="$scriptdir/task_list"
+
+rm -rf $task_list
 
 #
 # script header
@@ -118,6 +122,10 @@ done
 
 EOF
 
+echo "datadir=\$INPUT_DATA_ROOT/blast-bwa" > $env_script
+echo "outdir=\$OUTPUT_DATA_ROOT_DIR/blast-bwa" >> $env_script
+echo "demultidir=\$datadir/${seqbase}.gz_demulti" >> $env_script
+
 cat >>$runscript <<EOF
 demultidir="\$datadir/${seqbase}.gz_demulti"
 
@@ -140,7 +148,8 @@ for fastq in `ls $demultidir/*.fastq.gz | grep -v undetermined`; do
     i=$((i + 1))
     name=`echo $fastq | sed -e 's,^.*/\([^/]*\)$,\1,' -e 's,_.*$,,'`
     echo "echo \"bwa $name ($i of $nfiles)\"" >>$runscript
-    echo "bwa mem -t $nt -R \"@RG\\tID:$name\\tSM:$name\" \"\$datadir/Oar_v3.1.fa\" \"\$demultidir/$fastqbase\" 2>\$bwadir/$name.bwa.log | samtools view -b -S -u -T \$datadir/Oar_v3.1.fa -q 30 - | samtools sort -@ $nt - -o \$bwadir/$name.bam >\"\$bwadir/$name.out\" 2>\"\$bwadir/$name.out\"" >>$runscript
+    echo "bwa mem -t \$nt -R \"@RG\\tID:$name\\tSM:$name\" \"\$datadir/Oar_v3.1.fa\" \"\$demultidir/$fastqbase\" 2>\$bwadir/$name.bwa.log | samtools view -b -S -u -T \$datadir/Oar_v3.1.fa -q 30 - | samtools sort -@ \$nt - -o \$bwadir/$name.bam >\"\$bwadir/$name.out\" 2>\"\$bwadir/$name.out\"" >>$runscript
+    echo "bwa mem -t \$nt -R \"@RG\\tID:$name\\tSM:$name\" \"\$datadir/Oar_v3.1.fa\" \"\$demultidir/$fastqbase\" 2>\$bwadir/$name.bwa.log | samtools view -b -S -u -T \$datadir/Oar_v3.1.fa -q 30 - | samtools sort -@ \$nt - -o \$bwadir/$name.bam >\"\$bwadir/$name.out\" 2>\"\$bwadir/$name.out\"" >>$task_list
 done
 
 #
@@ -162,7 +171,8 @@ for fastq in `ls $demultidir/*.fastq.gz | grep -v undetermined`; do
     name=`echo $fastq | sed -e 's,^.*/\([^/]*\)$,\1,' -e 's,_.*$,,'`
     zcat "$demultidir/$fastqbase" | fastq_to_fasta -r -o "$demultidir/$name.fa"
     echo "echo \"blast $name ($i of $nfiles)\"" >>$runscript
-    echo "time blastn -task blastn -num_threads $nt -query \"\$demultidir/$name.fa\" -db nt -evalue 1.0e-10 -dust '20 64 1' -max_target_seqs 1 -outfmt '7 qseqid sseqid pident evalue staxids sscinames scomnames sskingdoms stitle' -out \"\$blastdir/$name.blast\" >\"\$blastdir/$name.out\" 2>\"\$blastdir/$name.err\"" >>$runscript
+    echo "time blastn -task blastn -num_threads \$nt -query \"\$demultidir/$name.fa\" -db nt -evalue 1.0e-10 -dust '20 64 1' -max_target_seqs 1 -outfmt '7 qseqid sseqid pident evalue staxids sscinames scomnames sskingdoms stitle' -out \"\$blastdir/$name.blast\">\"\$blastdir/$name.out\" 2>\"\$blastdir/$name.err\"" >>$runscript
+    echo "time blastn -task blastn -num_threads \$nt -query \"\$demultidir/$name.fa\" -db nt -evalue 1.0e-10 -dust '20 64 1' -max_target_seqs 1 -outfmt '7 qseqid sseqid pident evalue staxids sscinames scomnames sskingdoms stitle' -out \"\$blastdir/$name.blast\">\"\$blastdir/$name.out\" 2>\"\$blastdir/$name.err\"" >>$task_list
 done
 
 chmod +x $runscript
