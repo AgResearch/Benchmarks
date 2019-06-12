@@ -37,7 +37,7 @@ $ make install
 
 ### Sequential Write and Read on a compute node
 
-Run IOR to benchmark the performance of a single process writing to a file and then reading such a file sequentially. The following commands serve as an example, you may need to customise it for the benchmarking platform. 
+Run IOR to benchmark the performance of a single process writing to a file and then reading such a file sequentially. The following commands serve as an example, you may need to customise it for the benchmarking platform.
 
 ```
 $ conda activate $IOR_CONDA_ENV

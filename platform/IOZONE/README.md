@@ -42,7 +42,7 @@ Use the following command to test the performance of a specified file system on
 * read/re-read
 * random-read/random-write
 
-The test produces output that cover all tested file operations for record size of 4k to 16M for file size of 64k to a specified file size, which should be twice the size of the memory of the node where the benchmark is run.  The output will also be stored in an Excel file called IOZone_results.xls
+The test produces output that cover all tested file operations for record size of 4k to 16M  and for file size of 64k to a specified file size, which should be twice the size of the memory of the node where the benchmark is run.  The output will also be stored in an Excel file called IOZone_results.xls
 
 ```
 $ conda activate $IOZONE_CONDA_ENV
