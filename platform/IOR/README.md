@@ -28,7 +28,7 @@ Use the following instructions to navigate into directory, ior, and to build it.
 ```
 $ cd $BENCHMARK_ROOT/ior
 $ ./bootstrap
-$ ./configure --prefix=$CONDA_PREFIX
+$ ./configure LDFLAGS="-L$CONDA_PREFIX/lib -Wl,-rpath,$CONDA_PREFIX/lib" CFLAGS="-I$CONDA_PREFIX/include" --prefix=$CONDA_PREFIX
 $ make
 $ make install
 ```
