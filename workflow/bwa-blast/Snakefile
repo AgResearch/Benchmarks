@@ -1,0 +1,126 @@
+###############################################################################
+#Benchmarking BWA and BLAST
+#
+#
+#
+#
+#@author:charles.hefer@agresearch.co.nz
+###############################################################################
+
+#Some configuration parameters
+FASTQ_SAMPLES = "1016454388_TTCTA 1016463343_TTACGA"# 1016465443_GAACGACCT 1016465480_CGAGGTGGA 1016465560_CACATGA 1017052001_ACCATGACA 1017052004_TGGCCGCA 1017052009_TGTCACA 1017052010_CCATGCCA 1017052013_GCCAA 1017052014_ACTGGTGGT 1017052015_CCACG 1017052016_AACT 1017052017_GCTGGACA 1017052020_TCTAGCA 1017052030_TGCG 1017052033_GGACTA 1017052037_GGTA 1017052038_TAATG 1017052039_GGAACAAGT 1017052040_ATGGCG 1017052041_AAGATGCA 1017052043_CACTAG 1017052045_GAATACCA 1017052046_GTAT 1017052051_TTGA 1017052053_ATTG 1017052058_TTCGAACA 1017052069_CGGT 1017052071_GTTCA 1017052072_AGTCG 1017052074_CCAG 1017052079_AACCA 1017052094_TTGTCCTCA 1017052490_TCGCAA 1017052506_CGCTGA 1017052530_AACGTG 1017052539_CCTAAG 1017052708_TTGCTTCA 1017052750_ACATCG 1017052753_ACCTCATG 1017052759_CGTGAGGT 1017052762_GATCCA 1017052769_CCTACACCG 1017052770_ATGAACA 1017052776_ACATGCA 1017052787_CGAGGTGA 1017052788_GTAACA 1017052803_TTCGCA 1017052813_GGATCAA 1017052817_TTCTTGTTA 1017052824_TCTGG 1017052825_GAAGA 1017052832_CTTCTGTA 1017052841_CTTGCAA 1017052845_GAGAACAT 1017052848_GGCCTCA 1017052850_CGTACA 1017052856_GAACAGAAT 1017052857_CGGCA 1017052858_ACGAG 1017052865_CATCGCA 1017052868_AACAGAATA 1017052871_ACCTACCG 1017052873_ACCGTCCA 1017052876_CCACCTCGT 1017052878_CCAACCTGA 1017052880_CACCATGAA 1017052887_AGTGGCGTT 1017052892_CCTGTCA 1017052895_AAGTCA 1017052897_GGTGAGTCT 1017052898_GGAACAAT 1017052899_TCCGACA 1017052901_ACTGCA 1017052904_TATAA 1017052910_TTGCTTACA 1017052911_TTCCGCA 1017052915_AGGTCCA 1017052916_CTCAG 1017052917_TTGTTCGAT 1017052923_GAGCG 1017052928_AGAATCA 1017052929_GGCGG 1017052933_GGTTGGTCA 1017052935_TAGACCA 1017052940_GAATACA 1017052942_AACGAACAT 1017052946_CTTACGCA 1017052947_CAGAT 1017052951_TGATCA 1017052952_GTGGCCA 1017052953_TTGTTCCTA 1017052956_ACATA B14970_TAGCGACA"
+
+
+FASTA_SAMPLES = "1016454388 1016463343 1016465443"# 1016465480 1016465560 1017052001 1017052004 1017052009 1017052010 1017052013 1017052014 1017052015 1017052016 1017052017 1017052020 1017052030 1017052033 1017052037 1017052038 1017052039 1017052040 1017052041 1017052043 1017052045 1017052046 1017052051 1017052053 1017052058 1017052069 1017052071 1017052072 1017052074 1017052079 1017052094 1017052490 1017052506 1017052530 1017052539 1017052708 1017052750 1017052753 1017052759 1017052762 1017052769 1017052770 1017052776 1017052787 1017052788 1017052803 1017052813 1017052817 1017052824 1017052825 1017052832 1017052841 1017052845 1017052848 1017052850 1017052856 1017052857 1017052858 1017052865 1017052868 1017052871 1017052873 1017052876 1017052878 1017052880 1017052887 1017052892 1017052895 1017052897 1017052898 1017052899 1017052901 1017052904 1017052910 1017052911 1017052915 1017052916 1017052917 1017052923 1017052928 1017052929 1017052933 1017052935 1017052940 1017052942 1017052946 1017052947 1017052951 1017052952 1017052953 1017052956 B14970" 
+
+
+def get_benchmark_input():
+    """Returns the INPUT_DATA_ROOT_DIR environment variable"""
+    import os
+    if os.getenv("INPUT_DATA_ROOT_DIR"):
+        return os.getenv("BENCHMARK_INPUT")
+    else:
+        print("INPUT_DATA_ROOT_DIR environment not set, exiting")
+        sys.exit()
+    
+def get_bwa_threads_env():
+    """Returns the BWA_THREADS environment variable"""
+    import os
+    if is.getenv("BWA_THREADS"):
+        return os.getenv("BWA_THREADS")
+    else:
+        return 8
+
+def get_samtools_threads_env():
+    """Returns the SAMTOOLS_THREADS environment variable"""
+    import os
+    if is.getenv("SAMTOOLS_THREADS"):
+        return os.getenv("SAMTOOLS_THREADS")
+    else:
+        return 4
+
+def get_blast_threads_env():
+    """Returns the BLAST_THREADS environment variable"""
+    import os
+    if is.getenv("BLAST_THREADS"):
+        return os.getenv("BLAST_THREADS")
+    else:
+        return 12
+
+
+BWA_THREADS=get_bwa_threads_env()
+SAMTOOLS_THREADS=get_samtools_threads_env()      
+BLAST_THREADS=get_blast_threads_env()
+
+#Set some environment variables
+INPUT_FASTQ= get_benchmark_input() + "/blast-bwa/sample_fastq.txt.gz_demulti/"
+REFERENCE=get_benchmark_input() + "/blast-bwa/Oar_v3.1.fa"
+
+
+rule all:
+    input:
+        expand("aligned/{sample}.sorted.bam", sample=FASTQ_SAMPLES.split(" ")),
+        "sam_file_counts.txt",
+        expand("blast/{sample}.tab", sample=FASTA_SAMPLES.split(" ")),
+        "blast_md5sum.txt"
+
+rule bwa_mem_align:
+    input:
+        fastq = INPUT_FASTQ + "{sample}_psti.R1.fastq.gz",
+        reference = REFERENCE
+    output:
+        sam = "aligned/{sample}.sam"
+    benchmark:
+        "benchmarks/{sample}.sam"
+    params:
+        threads = BWA_THREADS,
+    shell:
+        "bwa mem -t {params.threads} {input.reference} {input.fastq} -o {output.sam}"
+
+rule sam_to_bam:
+    input:
+        sam = rules.bwa_mem_align.output.sam,
+        reference = REFERENCE
+    output:
+        bam = temp("aligned/{sample}.bam"),
+        sorted_bam = "aligned/{sample}.sorted.bam"
+    benchmark:
+        "benchmarks/{sample}.bam"
+    params:
+        threads = SAMTOOLS_THREADS
+    shell:
+        "samtools view -b -S -u -T {input.reference} -q 30 -o {output.bam} {input.sam} ; " 
+        "samtools sort -@ {params.threads} -o {output.sorted_bam} {output.bam}"
+
+rule count_bwa_hits:
+    input:
+        sorted_bam = expand("aligned/{sample}.sorted.bam", sample=FASTQ_SAMPLES.split(" "))
+    output:
+        file = "sam_file_counts.txt"
+    shell:
+        """less aligned/*.sam | grep -v "@" |  wc > {output.file}"""
+
+
+rule fasta_blast:
+    input:
+        fasta = INPUT_FASTQ + "{sample}.fa"
+    output:
+        tab = "blast/{sample}.tab"
+    benchmark:
+        "benchmarks/{sample}.tab"
+    params:
+        threads = BLAST_THREADS,
+        database = "nt"
+    shell:
+        "blastn -num_threads {params.threads} -query {input.fasta} -db {params.database} "
+        "-evalue 1.0e-10 -dust '20 64 1' -max_target_seqs 1 "
+        "-outfmt '7 qseqid sseqid pident evalue staxids sscinames scomnames sskingdoms stitle' "
+        "-out {output.tab}"
+
+rule blast_md5sum:
+    input:
+        blast_result = expand("blast/{sample}.tab", sample=FASTA_SAMPLES.split(" "))
+    output:
+        txt = "blast_md5sum.txt"
+    shell:
+        "md5sum blast/*.tab > {output.txt}"
