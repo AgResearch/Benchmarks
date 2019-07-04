@@ -24,8 +24,7 @@ The workflow is managed by `snakemake` and it has been setup to offload individu
 Activate the Conda environment created for this benchmark then run the shell script, *run-blast-bwa-benchmark*, to launch the benchmark.
 
 ```
-$ conda activate BWA_BLAST_CONDA_ENV
-$ $BENCHMARK_SOURCE/science/blast-bwa/run-bwa-blast-benchmark
+$ $BENCHMARK_SOURCE/workflow/bwa-blast/run-bwa-blast-benchmark
 ```
 
 ### Output verification
