@@ -3,4 +3,4 @@ mkdir -p $OUTPUT_DATA_ROOT_DIR/bwa-blast
 cp $BENCHMARK_ROOT/workflow/bwa-blast/Snakefile $OUTPUT_DATA_ROOT_DIR/bwa-blast/Snakefile
 cp $BENCHMARK_ROOT/workflow/bwa-blast/cluster.json $OUTPUT_DATA_ROOT_DIR/bwa-blast/cluster.json
 cd $OUTPUT_DATA_ROOT_DIR/bwa-blast
-snakemake -p --jobs 96 --cluster-config ./cluster.json --cluster "sbatch -A {cluster.account} -p {cluster.partition} -n {cluster.n} -t {cluster.time} --mem {cluster.memory} --job-name {cluster.name} " --latency-wait 60
+snakemake -p --jobs 96 --cluster-config ./cluster.json --cluster "sbatch -p {cluster.partition} -n {cluster.ntasks} -c {cluster.cpu_per_task} -t {cluster.time} --mem {cluster.memory} --job-name {cluster.name} " --latency-wait 60
