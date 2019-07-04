@@ -1,0 +1,27 @@
+{
+	"__default__":
+		{
+			"account" : "heferc",
+			"time": "01:00:00",
+			"n" : 1,
+			"partition" : "inv-dev",
+			"memory": "4G",
+			"name" : "snakemake"
+		},
+	"bwa_mem_align" :
+	{
+		"time" : "00:30:00",
+		"n" : "16",
+		"partition" : "inv-dev",
+		"memory" : "12G",
+		"name" : "bwa_mem"
+	},
+	"fasta_blast" :
+	{
+		"time" : "00:30:00",
+		"n" : "4",
+		"partition" : "inv-dev",
+		"memory" : "12G",
+		"name" : "blastn"
+	}
+}
