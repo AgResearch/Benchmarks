@@ -20,10 +20,11 @@ $ source benchmark.env
 
 ## Getting and Preparing Input Data
 
-All input data required to execute this benchmark suite can be downloaded from [here](https://url/to/be/confirmed).  Please download it and save it in the same root directory as the benchmark suite and then use the following command to extract data from the tarball:
+To obtain all input data required to execute this benchmark, please [email](dan.sun@agresearch.co.nz) a Linux system administrator in AgResearch Ltd and ask for access to the [Globus share](https://app.globus.org/file-manager?origin_id=8d37b9ec-9ea1-11e9-a378-0a2653bc2660&origin_path=%2F) to download the input data via using Globus.
+
+The input data is packaged in a tarball.  Please place the download tarball in the root directory of the benchmark suite and then use the following command to extract data from the tarball:
 
 ```
 $ cd $BENCHMARK_ROOT
-$ wget https://url/to/be/confirmed
 $ tar xzf benchmark_input_data.taz
 ```
