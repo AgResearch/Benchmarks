@@ -1,13 +1,13 @@
 {
 	"__default__":
-		{
-			"time": "01:00:00",
-			"ntasks" : 1,
-			"cpu_per_task": 1,
-			"partition" : "inv-blade-g8-fast",
-			"memory": "4G",
-			"name" : "snakemake"
-		},
+	{
+		"time": "01:00:00",
+		"ntasks" : 1,
+		"cpu_per_task": 1,
+		"partition" : "inv-blade-g8-fast",
+		"memory": "4G",
+		"name" : "snakemake"
+	},
 	"bwa_mem_align" :
 	{
 		"time" : "00:30:00",
