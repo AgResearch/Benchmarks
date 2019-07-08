@@ -41,7 +41,7 @@ Run IOR to benchmark the performance of a single process writing to a file and t
 
 ```
 $ conda activate $IOR_CONDA_ENV
-$ ior -a POSIX -w -r -e -b <block_size> -o <path_to_target_filesystem>\ior_seq_test
+$ ior -a POSIX -w -r -i 5 -e -b <block_size> -o <path_to_target_filesystem>\ior_seq_test
 ```
 
 Where ```<block_size>``` should be at least twice as large as the size of the memory of the compute node where the benchmark is executed and ``` <path_to_target_filesystem>``` is the path to the target filesystem that is been benchmarked.
@@ -55,7 +55,7 @@ conda activate $IOR_CONDA_ENV
 echo "Preparing testing data..."
 ior -a POSIX -w -e -k -b <block_size> -o <path_to_target_filesystem>/ior_rw_test > ./ior_concurent.out
 echo "Starging Concurrent Read..."
-ior -a POSIX -r -b <block_size> -o <path_to_target_filesystem>/ior_rw_test > ./ior_concurent_r.out&
+ior -a POSIX -r -E -b <block_size> -o <path_to_target_filesystem>/ior_rw_test > ./ior_concurent_r.out&
 echo "Starting Concurrent Write..."
 ior -a POSIX -w -e -b <block_size> -o <path_to_target_filesystem>/ior_rw_test2 > ./ior_concurent_w.out
 echo "Done!"
@@ -69,7 +69,7 @@ Run IOR as a MPI program to benchmark the write and read performance of a platfo
 
 ```
 $ conda activate $IOR_CONDA_ENV
-$ mpirun -np <num_tasks> -N <num_tasks_per_node> ior -a MPIIO -w -r -N <num_tasks> -b <block_size> -o <path_to_target_filesystem>\ior_seq_test
+$ mpirun -np <num_tasks> -N <num_tasks_per_node> ior -a MPIIO -w -r -i 5 -N <num_tasks> -b <block_size> -o <path_to_target_filesystem>\ior_seq_test
 ```
 
 Where ```<num_tasks>``` should be large enough to create sufficient load to test the aggregated bandwidth of the specified filesystem, ```<num_tasks_per_node>``` is number of tasks to run on a allocated node,  ```<block_size>``` times ```<num_tasks_per_node>``` should be twice as large as the size of the memory of the  compute node where the benchmark is executed, and ```<path_to_target_filesystem>``` is the path to the target filesystem that is been benchmarked.
