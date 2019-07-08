@@ -31,10 +31,10 @@ $ $BENCHMARK_SOURCE/workflow/GBS/run-gbs-benchmark
 Use the following command to extract the last 8 lines our tis benchmakr's output file
 
 ```
-tail -n 8 $OUTPUT_DATA_ROOT_DIR/tassel3-kgd/hapMap/KGD_run_1/KGD_run_1.log 
+tail -n 16 $OUTPUT_DATA_ROOT_DIR/tassel3-kgd/hapMap/KGD_run_1/KGD_run_1.log 
 ```
 
-If the benchmark ran successfully, the output of the above command should match the following:
+If the benchmark ran successfully, the last 8 lines of above command should match the following:
 
 ```
 # SNPs:  67927
@@ -46,3 +46,4 @@ Mean sample depth: 5.905667
 Mean self-relatedness (G5 diagonal): 1.072013
 minimum eigenvalue:  1.774021e-34
 ```
+
