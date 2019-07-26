@@ -1,0 +1,23 @@
+package:
+  name: ior
+  version: "3.1.0"
+
+source:
+  git_url: https://github.com/AgResearch/ior.git
+
+requirements:
+  build:
+    - openmpi-mpicc
+    - autoconf
+    - automake
+    - make
+
+  run:
+    - openmpi
+
+test:
+  commands:
+    - ior -h
+
+about:
+  home:
