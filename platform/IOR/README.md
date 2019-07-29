@@ -23,16 +23,6 @@ $ conda-env create -p $IOR_CONDA_ENV -f $IOR_CONDA_ENV_SPEC
 $ conda activate $IOR_CONDA_ENV
 ```
 
-Use the following instructions to navigate into directory, ior, and to build it.
-
-```
-$ cd $BENCHMARK_ROOT/ior
-$ ./bootstrap
-$ ./configure LDFLAGS="-L$CONDA_PREFIX/lib -Wl,-rpath,$CONDA_PREFIX/lib" CFLAGS="-I$CONDA_PREFIX/include" --prefix=$CONDA_PREFIX
-$ make
-$ make install
-```
-
 ## Execution
 
 ### Sequential Write and Read on a compute node
@@ -72,4 +62,4 @@ $ conda activate $IOR_CONDA_ENV
 $ mpirun -np <num_tasks> ior -a MPIIO -w -r -i 5 -N <num_tasks> -b <block_size> -t <transfer_size> -o <path_to_target_filesystem>\ior_seq_test
 ```
 
-Where ```<num_tasks>``` should be large enough to create sufficient load to test the aggregated bandwidth of the specified filesystem,  ```<block_size>``` times ```<num_tasks_per_node>``` should be twice as large as the size of the memory of the  compute node where the benchmark is executed, ```<path_to_target_filesystem>``` is the path to the target filesystem that is been benchmarked, and ```transfer_size``` may be chosen in such a manner as to tune for the file-system characteristics.
+Where ```<num_tasks>``` should be large enough to create sufficient load to test the aggregated bandwidth of the specified filesystem,  ```<block_size>``` times ```number of tasks allocated to a node``` should be twice as large as the size of the memory of the  compute node where the benchmark is executed, ```<path_to_target_filesystem>``` is the path to the target filesystem that is been benchmarked, and ```transfer_size``` may be chosen in such a manner as to tune for the file-system characteristics.
