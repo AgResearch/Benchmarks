@@ -1,14 +1,6 @@
 name: iozone-env
 channels:
-  - bioconda
-  - conda-forge
-  - defaults
-  - r
+  - agresearch
 dependencies:
-  - gmp=6.1.2=0
-  - mpc=1.1.0=4
-  - mpfr=3.1.5=0
-  - cloog=0.18.0=0
-  - gcc=4.8.5=7
-  - isl=0.12.2=0
+  - iozone
 prefix: /tmp/iozone
