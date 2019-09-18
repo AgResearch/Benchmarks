@@ -38,6 +38,6 @@ $ md5sum $OUTPUT_DATA_ROOT_DIR/bwa-blast/blast_md5sum.txt $OUTPUT_DATA_ROOT_DIR/
 and its output should be like the following:
 
 ```
-d0ffbb96c530af513222f87deb513700  blast_md5sum.txt
+f30df8c3f8568f107dd1e90cd3feb78a  blast_md5sum.txt
 9b4496663acf8040d205ac8a5ce124b2  sam_file_counts.txt
 ```
