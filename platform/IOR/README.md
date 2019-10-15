@@ -8,13 +8,6 @@ It measures the sustainable bandwidth of a file system  using the various APIs, 
 
 ## Installation
 
-Download the latest release (v3.1.0) from GitHub and unpack the file.
-
-```
-$ cd $BENCHMARK_ROOT
-$ git clone git@github.com:AgResearch/ior.git
-```
-
 Create a Conda environment based on the provided environment specification file and then activate the environment before building and running the benchmark.  For example:
 
 ```
